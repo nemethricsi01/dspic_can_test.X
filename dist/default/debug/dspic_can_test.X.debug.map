@@ -4,10 +4,17 @@ Tool Name:
   c:\program files\microchip\xc16\v1.60\bin\bin\..\bin/elf-ld.exe
 
 Command:
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.00 \
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.01 \
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.02 \
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.03 \
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.04 \
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.05 \
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.06 \
   -p33EV256GM102 \
   --mdfp=C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.3.79/xc16 \
   -o \
-  dist/default/production/dspic_can_test.X.production.elf \
+  dist/default/debug/dspic_can_test.X.debug.elf \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/.. \
   -LC:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.3.79/xc16/bin/../support/dsPIC33E/gld \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../lib \
@@ -18,10 +25,12 @@ Command:
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../support/dsPIC33C/gld \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../support/dsPIC33E/gld \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../support/dsPIC33F/gld \
-  build/default/production/newmain.o \
+  build/default/debug/newmain.o \
   --local-stack \
   --defsym=__MPLAB_BUILD=1 \
-  -Tp33EV256GM102.gld.00 \
+  --defsym=__MPLAB_DEBUG=1 \
+  --defsym=__DEBUG=1 \
+  -Tp33EV256GM102.gld.07 \
   --stack=16 \
   --check-sections \
   --data-init \
@@ -33,10 +42,10 @@ Command:
   --stackguard=16 \
   --no-force-link \
   --smart-io \
-  -Map=dist/default/production/dspic_can_test.X.production.map \
+  -Map=dist/default/debug/dspic_can_test.X.debug.map \
   --report-mem \
   --memorysummary \
-  dist/default/production/memoryfile.xml \
+  dist/default/debug/memoryfile.xml \
   -start-group \
   --library=lega-pic30-elf \
   --library=m-elf \
@@ -54,7 +63,7 @@ c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(data
 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt_start_mode_normalep.Leo)
                               (__crt_start_mode_normal)
 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
-                              build/default/production/newmain.o (___delay32)
+                              build/default/debug/newmain.o (___delay32)
 
 
 Selected CodeGuard Options:
@@ -89,21 +98,28 @@ Default Scalar Model: Small
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200               0x100           0x180  (384)
-.text                        0x300               0x1e0           0x2d0  (720)
-.init.delay32                0x4e0                0x1c            0x2a  (42)
-.dinit                       0x4fc                 0xe            0x15  (21)
+.text                        0x300               0x19a           0x267  (615)
+.init.delay32                0x49a                0x1c            0x2a  (42)
+.dinit                       0x4b6                 0xe            0x15  (21)
 
-                 Total "program" memory used (bytes):          0x48f  (1167) <1%
+                 Total "program" memory used (bytes):          0x426  (1062) <1%
 
 
 "data" Memory  [Origin = 0x1000, Length = 0x4000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-_00000000062856E0649ef819    0x1000                   0            0x40  (64)
-.bss                        0x1040                   0            0x1a  (26)
+reserve_data_0x1000         0x1000                0x1c            0x1c  (28)
+reserve_data_0x101c         0x101c                 0x2             0x2  (2)
+reserve_data_0x101e         0x101e                 0x2             0x2  (2)
+reserve_data_0x1020         0x1020                 0x2             0x2  (2)
+reserve_data_0x1022         0x1022                 0x2             0x2  (2)
+reserve_data_0x1024         0x1024                 0x4             0x4  (4)
+reserve_data_0x1028         0x1028                0x28            0x28  (40)
+.nbss                       0x1050                   0             0x8  (8)
+_00000000062656E0649ee451    0x1080                   0            0x40  (64)
 
-                 Total "data" memory used (bytes):           0x5a  (90) <1%
+                 Total "data" memory used (bytes):           0x98  (152) <1%
 
 
 Dynamic Memory Usage
@@ -111,22 +127,22 @@ Dynamic Memory Usage
 region                     address                      maximum length  (dec)
 ------                     -------                      ---------------------
 heap                             0                                   0  (0)
-stack                       0x105a                              0x3fa6  (16294)
+stack                       0x10c0                              0x3f40  (16192)
 
-                 Maximum dynamic memory (bytes):         0x3fa6  (16294)
+                 Maximum dynamic memory (bytes):         0x3f40  (16192)
 
 Info: Project is using a large data memory model when small data memory model is sufficient.
 
 
 External Symbols in Data Memory (by address):
 
-                    0x1000                  _ecan1MsgBuf
-                    0x1040                  _ledbuff
+                    0x1050                  _ledbuff
+                    0x1080                  _ecan1MsgBuf
 
 External Symbols in Data Memory (by name):
 
-                    0x1000                  _ecan1MsgBuf
-                    0x1040                  _ledbuff
+                    0x1080                  _ecan1MsgBuf
+                    0x1050                  _ledbuff
 
 External Symbols in Program Memory (by address):
 
@@ -136,20 +152,20 @@ External Symbols in Program Memory (by address):
                   0x000248                  __data_init_extended
                   0x0002fa                  __DefaultInterrupt
                   0x000300                  _writeLed
-                  0x0003b6                  _main
-                  0x0004e0                  ___delay32
+                  0x00035a                  _main
+                  0x00049a                  ___delay32
                   0x02ab80                  __FSEC.sec
 
 External Symbols in Program Memory (by name):
 
                   0x0002fa                  __DefaultInterrupt
                   0x02ab80                  __FSEC.sec
-                  0x0004e0                  ___delay32
+                  0x00049a                  ___delay32
                   0x000248                  __data_init
                   0x000248                  __data_init_extended
                   0x00023c                  __psv_init
                   0x000200                  __resetPRI
-                  0x0003b6                  _main
+                  0x00035a                  _main
                   0x000300                  _writeLed
 
 Memory Configuration
@@ -177,8 +193,45 @@ FALTREG          0x02abc4           0x000002
 
 Linker script and memory map
 
-LOAD build/default/production/newmain.o
+
+reserve_data_0x1000
+                    0x1000         0x1c
+                    0x101c                  . = 0x1c
+ *fill*             0x1000         0x1c00
+
+reserve_data_0x101c
+                    0x101c          0x2
+                    0x101e                  . = 0x2
+ *fill*             0x101c          0x200
+
+reserve_data_0x101e
+                    0x101e          0x2
+                    0x1020                  . = 0x2
+ *fill*             0x101e          0x200
+
+reserve_data_0x1020
+                    0x1020          0x2
+                    0x1022                  . = 0x2
+ *fill*             0x1020          0x200
+
+reserve_data_0x1022
+                    0x1022          0x2
+                    0x1024                  . = 0x2
+ *fill*             0x1022          0x200
+
+reserve_data_0x1024
+                    0x1024          0x4
+                    0x1028                  . = 0x4
+ *fill*             0x1024          0x400
+
+reserve_data_0x1028
+                    0x1028         0x28
+                    0x1050                  . = 0x28
+ *fill*             0x1028         0x2800
+LOAD build/default/debug/newmain.o
                     0x0001                  __MPLAB_BUILD = 0x1
+                    0x0001                  __MPLAB_DEBUG = 0x1
+                    0x0001                  __DEBUG = 0x1
 LOAD p33EV256GM102
 LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libfx-elf.a
                     0x2ab80                  __FSEC = 0x2ab80
@@ -281,26 +334,26 @@ __FALTREG
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x1756
+.debug_info       0x000000       0x172c
  *(.debug_info)
- .debug_info      0x000000       0x1756 build/default/production/newmain.o
+ .debug_info      0x000000       0x172c build/default/debug/newmain.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x144
+.debug_abbrev     0x000000        0x150
  *(.debug_abbrev)
- .debug_abbrev    0x000000        0x144 build/default/production/newmain.o
+ .debug_abbrev    0x000000        0x150 build/default/debug/newmain.o
 
-.debug_line       0x000000        0x162
+.debug_line       0x000000        0x155
  *(.debug_line)
- .debug_line      0x000000        0x162 build/default/production/newmain.o
+ .debug_line      0x000000        0x155 build/default/debug/newmain.o
 
 .debug_frame      0x000000         0x48
  *(.debug_frame)
- .debug_frame     0x000000         0x48 build/default/production/newmain.o
+ .debug_frame     0x000000         0x48 build/default/debug/newmain.o
 
 .debug_str        0x000000         0xb5
  *(.debug_str)
- .debug_str       0x000000         0xb5 build/default/production/newmain.o
+ .debug_str       0x000000         0xb5 build/default/debug/newmain.o
 
 .debug_loc
  *(.debug_loc)
@@ -312,7 +365,7 @@ __FALTREG
                   0x000000         0x44
  *(.debug_pubnames)
  .debug_pubnames
-                  0x000000         0x44 build/default/production/newmain.o
+                  0x000000         0x44 build/default/debug/newmain.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -320,7 +373,7 @@ __FALTREG
 .debug_aranges    0x000000         0x18
  *(.debug_aranges)
  .debug_aranges
-                  0x000000         0x18 build/default/production/newmain.o
+                  0x000000         0x18 build/default/debug/newmain.o
                     0x0000                  WREG0 = 0x0
                     0x0000                  _WREG0 = 0x0
                     0x0002                  WREG1 = 0x2
@@ -1633,97 +1686,97 @@ LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a
 LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libm-elf.a
 LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-c-elf.a
 END GROUP
-OUTPUT(dist/default/production/dspic_can_test.X.production.elf elf32-pic30)
+OUTPUT(dist/default/debug/dspic_can_test.X.debug.elf elf32-pic30)
 LOAD /CW/_FSEC
 LOAD default_isr
 LOAD data_init
 
 .debug_pubtypes
-                  0x000018        0x1f5
+                  0x000018        0x1e9
  .debug_pubtypes
-                  0x000018        0x1f5 build/default/production/newmain.o
+                  0x000018        0x1e9 build/default/debug/newmain.o
 
 __c30_signature
-                  0x00020d         0x18
+                  0x000201         0x18
  __c30_signature
-                  0x00020d          0x6 build/default/production/newmain.o
+                  0x000201          0x6 build/default/debug/newmain.o
  __c30_signature
-                  0x000213          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt0_extendedep.o)
+                  0x000207          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt0_extendedep.o)
  __c30_signature
-                  0x000219          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(data_init_extended.o)
+                  0x00020d          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(data_init_extended.o)
  __c30_signature
-                  0x00021f          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
+                  0x000213          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
 
-_00000000062856E0649ef819
-                    0x1000         0x40
- _00000000062856E0649ef819
-                    0x1000         0x40 build/default/production/newmain.o
-                    0x1000                  _ecan1MsgBuf
+.nbss               0x1050          0x8
+ .nbss              0x1050          0x8 build/default/debug/newmain.o
+                    0x1050                  _ledbuff
 
-.bss                0x1040         0x1a
- .bss               0x1040         0x1a build/default/production/newmain.o
-                    0x1040                  _ledbuff
+_00000000062656E0649ee451
+                    0x1080         0x40
+ _00000000062656E0649ee451
+                    0x1080         0x40 build/default/debug/newmain.o
+                    0x1080                  _ecan1MsgBuf
 
 .config_CTXT2     0x02abc4          0x2
- .config_CTXT2    0x02abc4          0x2 build/default/production/newmain.o
+ .config_CTXT2    0x02abc4          0x2 build/default/debug/newmain.o
 
 .config_ALTI2C1
                   0x02abc0          0x2
  .config_ALTI2C1
-                  0x02abc0          0x2 build/default/production/newmain.o
+                  0x02abc0          0x2 build/default/debug/newmain.o
 
 .config_DMTEN     0x02abbc          0x2
- .config_DMTEN    0x02abbc          0x2 build/default/production/newmain.o
+ .config_DMTEN    0x02abbc          0x2 build/default/debug/newmain.o
 
 .config_DMTCNTH
                   0x02abb8          0x2
  .config_DMTCNTH
-                  0x02abb8          0x2 build/default/production/newmain.o
+                  0x02abb8          0x2 build/default/debug/newmain.o
 
 .config_DMTCNTL
                   0x02abb4          0x2
  .config_DMTCNTL
-                  0x02abb4          0x2 build/default/production/newmain.o
+                  0x02abb4          0x2 build/default/debug/newmain.o
 
 .config_DMTIVTH
                   0x02abb0          0x2
  .config_DMTIVTH
-                  0x02abb0          0x2 build/default/production/newmain.o
+                  0x02abb0          0x2 build/default/debug/newmain.o
 
 .config_DMTIVTL
                   0x02abac          0x2
  .config_DMTIVTL
-                  0x02abac          0x2 build/default/production/newmain.o
+                  0x02abac          0x2 build/default/debug/newmain.o
 
 .config_ICS       0x02aba8          0x2
- .config_ICS      0x02aba8          0x2 build/default/production/newmain.o
+ .config_ICS      0x02aba8          0x2 build/default/debug/newmain.o
 
 .config_BOREN0    0x02aba4          0x2
  .config_BOREN0
-                  0x02aba4          0x2 build/default/production/newmain.o
+                  0x02aba4          0x2 build/default/debug/newmain.o
 
 .config_WDTWIN    0x02aba0          0x2
  .config_WDTWIN
-                  0x02aba0          0x2 build/default/production/newmain.o
+                  0x02aba0          0x2 build/default/debug/newmain.o
 
 .config_PLLKEN    0x02ab9c          0x2
  .config_PLLKEN
-                  0x02ab9c          0x2 build/default/production/newmain.o
+                  0x02ab9c          0x2 build/default/debug/newmain.o
 
 .config_IESO      0x02ab98          0x2
- .config_IESO     0x02ab98          0x2 build/default/production/newmain.o
+ .config_IESO     0x02ab98          0x2 build/default/debug/newmain.o
 
 .config_BSLIM     0x02ab90          0x2
- .config_BSLIM    0x02ab90          0x2 build/default/production/newmain.o
+ .config_BSLIM    0x02ab90          0x2 build/default/debug/newmain.o
 
-.text             0x000300        0x1e0
- .text            0x000300        0x1e0 build/default/production/newmain.o
+.text             0x000300        0x19a
+ .text            0x000300        0x19a build/default/debug/newmain.o
                   0x000300                  _writeLed
-                  0x0003b6                  _main
+                  0x00035a                  _main
 
-.init.delay32     0x0004e0         0x1c
- .init.delay32    0x0004e0         0x1c c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
-                  0x0004e0                  ___delay32
+.init.delay32     0x00049a         0x1c
+ .init.delay32    0x00049a         0x1c c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
+                  0x00049a                  ___delay32
 
-.dinit            0x0004fc          0xe
- .dinit           0x0004fc          0xe data_init
+.dinit            0x0004b6          0xe
+ .dinit           0x0004b6          0xe data_init

@@ -95,14 +95,14 @@ MP_LINKER_FILE_OPTION=,--script=p33EV256GM102.gld
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/newmain.o: newmain.c  .generated_files/flags/default/9274f671f7e613fa9f5dd42e0f62ccb9f322919a .generated_files/flags/default/ae23d0701649861c3621c34bd6c886fd5536b67b
+${OBJECTDIR}/newmain.o: newmain.c  .generated_files/flags/default/ceb3d8900638658745ab250162aed41fc61ee424 .generated_files/flags/default/a8ab92ac987104207ce356e7c4c4f6b4e3a39e67
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/newmain.o.d 
 	@${RM} ${OBJECTDIR}/newmain.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  newmain.c  -o ${OBJECTDIR}/newmain.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/newmain.o.d"      -g -D__DEBUG   -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
 else
-${OBJECTDIR}/newmain.o: newmain.c  .generated_files/flags/default/fdc48e33d6cde346e4fe707789da3728db859815 .generated_files/flags/default/ae23d0701649861c3621c34bd6c886fd5536b67b
+${OBJECTDIR}/newmain.o: newmain.c  .generated_files/flags/default/5cf9c362fe8ba96eaf40488b5e860b2dfa48588b .generated_files/flags/default/a8ab92ac987104207ce356e7c4c4f6b4e3a39e67
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/newmain.o.d 
 	@${RM} ${OBJECTDIR}/newmain.o 
