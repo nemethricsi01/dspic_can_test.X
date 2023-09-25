@@ -45,7 +45,7 @@
 #pragma config BOREN0 = OFF              // Brown Out Reset Detection Bit (BOR is Enabled)
 
 // FICD
-#pragma config ICS = PGD2               // ICD Communication Channel Select Bits (Communicate on PGEC2 and PGED2)
+#pragma config ICS = PGD1               // ICD Communication Channel Select Bits (Communicate on PGEC2 and PGED2)
 
 // FDMTINTVL
 #pragma config DMTIVTL = 0xFFFF         // Lower 16 Bits of 32 Bit DMT Window Interval (Enter Hexadecimal value)
@@ -84,86 +84,83 @@ uint8_t ledbuff[25];
 
 //uint32_t ledbuff[4];
 
-void writeLed(uint32_t color)
+void writeLed(uint8_t R,uint8_t G,uint8_t B)
 {
     int i;
-    for( i = 24;i>=0;i--)
+        for( i = 0;i<24;i++)
     {
-       if(color&1)//1
+       
+           ledbuff[i] = 0b10000000;
+    }
+    uint8_t mask = 1;
+    for( i = 7;i>=0;i--)
+    {
+       if(R & mask)//1
        {
-           ledbuff[i] = 0xFC;
+           ledbuff[i] = 0b11111100;
        }
        else//0
        {
-           ledbuff[i] = 0xC0;
+           ledbuff[i] = 0b10000000;
        }
-       color = color>>1;
+       mask = mask<<1;
+    }
+    mask = 1;
+    for( i = 15;i>=8;i--)
+    {
+       if(G & mask)//1
+       {
+           ledbuff[i] = 0b11111100;
+       }
+       else//0
+       {
+           ledbuff[i] = 0b10000000;
+       }
+       mask = mask<<1;
+    }
+    mask = 1;
+    for( i = 23;i>=16;i--)
+    {
+       if(B & mask)//1
+       {
+           ledbuff[i] = 0b11111100;
+       }
+       else//0
+       {
+           ledbuff[i] = 0b10000000;
+       }
+       mask = mask<<1;
     }
     for(i = 0;i< 8;i++)
     {
         SPI1BUF = ledbuff[i];
     }
-    if(ledbuff[7] == 0xFC)
-    {
-       Nop(); 
-       Nop(); 
-       Nop(); 
-       Nop(); 
-       Nop(); 
-       Nop();
-       
-    }
-    else if(ledbuff[7] == 0xC0)
-    {
-       Nop(); 
-       Nop(); 
-       Nop(); 
-       Nop(); 
-       Nop(); 
-       Nop();
-       Nop();
-       Nop();
-       Nop();
-       Nop();
-       Nop();
-       
-       
-    }
-    
+    for( i =0;i<10;i++);
     for(i = 8;i< 16;i++)
     {
         SPI1BUF = ledbuff[i];
     }
-    if(ledbuff[15] == 0xFC)
-    {
-       Nop(); 
-       Nop(); 
-       Nop(); 
-       Nop(); 
-       Nop(); 
-       Nop();  
-    }
-    else if(ledbuff[15] == 0xC0)
-    {
-       Nop(); 
-       Nop(); 
-       Nop(); 
-       Nop(); 
-       Nop(); 
-       Nop();
-       Nop();
-       Nop();
-       Nop();
-       Nop();
-       Nop();  
-    }
-    for(i = 16;i< 25;i++)
+    
+    for( i =0;i<10;i++);
+    for(i = 16;i< 24;i++)
     {
         SPI1BUF = ledbuff[i];
     }
-     for( i =0;i<10;i++);
-     for( i =0;i<10;i++);
-//    while(SPI1STATbits.SRMPT != 0);
+}
+void gpio_init(void)
+{
+    TRISBbits.TRISB9 = 1;//sor1_3
+    TRISBbits.TRISB10 = 1;//sor16_18
+    TRISBbits.TRISB11 = 1;//sor19_21
+    TRISBbits.TRISB12 = 1;//sor22_25
+    TRISBbits.TRISB13 = 1;//OSZLOP_A
+    
+    
+    
+    TRISCbits.TRISC6 = 1;//sor4_6
+    TRISCbits.TRISC7 = 1;//sor7_9
+    TRISCbits.TRISC8 = 1;//sor10_12
+    TRISCbits.TRISC9 = 1;//sor13_15
 }
 void main(void) 
 {
@@ -240,17 +237,18 @@ void main(void)
     {
         
         int i;
-        for(i = 0;i<24;i++)
+        for(i = 0;i<28;i++)
         {
-            writeLed(0x000000);
+            writeLed(0,0,0);
         }
-        __delay_ms(500);
-        for(i = 0;i<24;i++)
+        __delay_ms(1000);
+        for(i = 0;i<28;i++)
         {
-            writeLed(0x000001);
+            writeLed(10,0,10);
         }
+        while(1);
         
-        __delay_ms(500);
+        __delay_ms(1000);
         
     }
     return;
