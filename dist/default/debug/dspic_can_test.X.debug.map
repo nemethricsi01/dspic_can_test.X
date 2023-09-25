@@ -4,19 +4,12 @@ Tool Name:
   c:\program files\microchip\xc16\v1.60\bin\bin\..\bin/elf-ld.exe
 
 Command:
-  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.00 \
-  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.01 \
-  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.02 \
-  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.03 \
-  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.04 \
-  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.05 \
-  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00003fa8.06 \
-  -p33EV256GM102 \
-  --mdfp=C:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.3.79/xc16 \
+  -p33EV256GM104 \
+  --mdfp=C:/Program Files/Microchip/MPLABX/v6.10/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.3.79/xc16 \
   -o \
   dist/default/debug/dspic_can_test.X.debug.elf \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/.. \
-  -LC:/Program Files/Microchip/MPLABX/v6.00/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.3.79/xc16/bin/../support/dsPIC33E/gld \
+  -LC:/Program Files/Microchip/MPLABX/v6.10/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.3.79/xc16/bin/../support/dsPIC33E/gld \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../lib \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../support/PIC24E/gld \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../support/PIC24F/gld \
@@ -30,7 +23,7 @@ Command:
   --defsym=__MPLAB_BUILD=1 \
   --defsym=__MPLAB_DEBUG=1 \
   --defsym=__DEBUG=1 \
-  -Tp33EV256GM102.gld.07 \
+  -Tp33EV256GM104.gld.00 \
   --stack=16 \
   --check-sections \
   --data-init \
@@ -53,7 +46,7 @@ Command:
   -end-group \
 
 
-Optional library libp33EV256GM102.a not found
+Optional library libp33EV256GM104.a not found
 Archive member included because of file (symbol)
 
 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt0_extendedep.o)
@@ -98,28 +91,21 @@ Default Scalar Model: Small
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200               0x100           0x180  (384)
-.text                        0x300               0x19a           0x267  (615)
-.init.delay32                0x49a                0x1c            0x2a  (42)
-.dinit                       0x4b6                 0xe            0x15  (21)
+.text                        0x300               0x1e0           0x2d0  (720)
+.init.delay32                0x4e0                0x1c            0x2a  (42)
+.dinit                       0x4fc                 0xe            0x15  (21)
 
-                 Total "program" memory used (bytes):          0x426  (1062) <1%
+                 Total "program" memory used (bytes):          0x48f  (1167) <1%
 
 
 "data" Memory  [Origin = 0x1000, Length = 0x4000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-reserve_data_0x1000         0x1000                0x1c            0x1c  (28)
-reserve_data_0x101c         0x101c                 0x2             0x2  (2)
-reserve_data_0x101e         0x101e                 0x2             0x2  (2)
-reserve_data_0x1020         0x1020                 0x2             0x2  (2)
-reserve_data_0x1022         0x1022                 0x2             0x2  (2)
-reserve_data_0x1024         0x1024                 0x4             0x4  (4)
-reserve_data_0x1028         0x1028                0x28            0x28  (40)
-.nbss                       0x1050                   0             0x8  (8)
-_00000000062656E0649ee451    0x1080                   0            0x40  (64)
+_00000000063C0780650da663    0x1000                   0            0x40  (64)
+.bss                        0x1040                   0            0x1a  (26)
 
-                 Total "data" memory used (bytes):           0x98  (152) <1%
+                 Total "data" memory used (bytes):           0x5a  (90) <1%
 
 
 Dynamic Memory Usage
@@ -127,22 +113,22 @@ Dynamic Memory Usage
 region                     address                      maximum length  (dec)
 ------                     -------                      ---------------------
 heap                             0                                   0  (0)
-stack                       0x10c0                              0x3f40  (16192)
+stack                       0x105a                              0x3fa6  (16294)
 
-                 Maximum dynamic memory (bytes):         0x3f40  (16192)
+                 Maximum dynamic memory (bytes):         0x3fa6  (16294)
 
 Info: Project is using a large data memory model when small data memory model is sufficient.
 
 
 External Symbols in Data Memory (by address):
 
-                    0x1050                  _ledbuff
-                    0x1080                  _ecan1MsgBuf
+                    0x1000                  _ecan1MsgBuf
+                    0x1040                  _ledbuff
 
 External Symbols in Data Memory (by name):
 
-                    0x1080                  _ecan1MsgBuf
-                    0x1050                  _ledbuff
+                    0x1000                  _ecan1MsgBuf
+                    0x1040                  _ledbuff
 
 External Symbols in Program Memory (by address):
 
@@ -152,20 +138,20 @@ External Symbols in Program Memory (by address):
                   0x000248                  __data_init_extended
                   0x0002fa                  __DefaultInterrupt
                   0x000300                  _writeLed
-                  0x00035a                  _main
-                  0x00049a                  ___delay32
+                  0x0003b6                  _main
+                  0x0004e0                  ___delay32
                   0x02ab80                  __FSEC.sec
 
 External Symbols in Program Memory (by name):
 
                   0x0002fa                  __DefaultInterrupt
                   0x02ab80                  __FSEC.sec
-                  0x00049a                  ___delay32
+                  0x0004e0                  ___delay32
                   0x000248                  __data_init
                   0x000248                  __data_init_extended
                   0x00023c                  __psv_init
                   0x000200                  __resetPRI
-                  0x00035a                  _main
+                  0x0003b6                  _main
                   0x000300                  _writeLed
 
 Memory Configuration
@@ -193,46 +179,11 @@ FALTREG          0x02abc4           0x000002
 
 Linker script and memory map
 
-
-reserve_data_0x1000
-                    0x1000         0x1c
-                    0x101c                  . = 0x1c
- *fill*             0x1000         0x1c00
-
-reserve_data_0x101c
-                    0x101c          0x2
-                    0x101e                  . = 0x2
- *fill*             0x101c          0x200
-
-reserve_data_0x101e
-                    0x101e          0x2
-                    0x1020                  . = 0x2
- *fill*             0x101e          0x200
-
-reserve_data_0x1020
-                    0x1020          0x2
-                    0x1022                  . = 0x2
- *fill*             0x1020          0x200
-
-reserve_data_0x1022
-                    0x1022          0x2
-                    0x1024                  . = 0x2
- *fill*             0x1022          0x200
-
-reserve_data_0x1024
-                    0x1024          0x4
-                    0x1028                  . = 0x4
- *fill*             0x1024          0x400
-
-reserve_data_0x1028
-                    0x1028         0x28
-                    0x1050                  . = 0x28
- *fill*             0x1028         0x2800
 LOAD build/default/debug/newmain.o
                     0x0001                  __MPLAB_BUILD = 0x1
                     0x0001                  __MPLAB_DEBUG = 0x1
                     0x0001                  __DEBUG = 0x1
-LOAD p33EV256GM102
+LOAD p33EV256GM104
 LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libfx-elf.a
                     0x2ab80                  __FSEC = 0x2ab80
                     0x2ab90                  __FBSLIM = 0x2ab90
@@ -334,18 +285,18 @@ __FALTREG
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x172c
+.debug_info       0x000000       0x1756
  *(.debug_info)
- .debug_info      0x000000       0x172c build/default/debug/newmain.o
+ .debug_info      0x000000       0x1756 build/default/debug/newmain.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x150
+.debug_abbrev     0x000000        0x144
  *(.debug_abbrev)
- .debug_abbrev    0x000000        0x150 build/default/debug/newmain.o
+ .debug_abbrev    0x000000        0x144 build/default/debug/newmain.o
 
-.debug_line       0x000000        0x155
+.debug_line       0x000000        0x162
  *(.debug_line)
- .debug_line      0x000000        0x155 build/default/debug/newmain.o
+ .debug_line      0x000000        0x162 build/default/debug/newmain.o
 
 .debug_frame      0x000000         0x48
  *(.debug_frame)
@@ -939,6 +890,15 @@ __FALTREG
                     0x0678                  RPOR4 = 0x678
                     0x0678                  _RPOR4 = 0x678
                     0x0678                  _RPOR4bits = 0x678
+                    0x067a                  RPOR5 = 0x67a
+                    0x067a                  _RPOR5 = 0x67a
+                    0x067a                  _RPOR5bits = 0x67a
+                    0x067c                  RPOR6 = 0x67c
+                    0x067c                  _RPOR6 = 0x67c
+                    0x067c                  _RPOR6bits = 0x67c
+                    0x067e                  RPOR7 = 0x67e
+                    0x067e                  _RPOR7 = 0x67e
+                    0x067e                  _RPOR7bits = 0x67e
                     0x0684                  RPOR10 = 0x684
                     0x0684                  _RPOR10 = 0x684
                     0x0684                  _RPOR10bits = 0x684
@@ -1621,6 +1581,36 @@ __FALTREG
                     0x0e26                  SR0B = 0xe26
                     0x0e26                  _SR0B = 0xe26
                     0x0e26                  _SR0Bbits = 0xe26
+                    0x0e28                  TRISC = 0xe28
+                    0x0e28                  _TRISC = 0xe28
+                    0x0e28                  _TRISCbits = 0xe28
+                    0x0e2a                  PORTC = 0xe2a
+                    0x0e2a                  _PORTC = 0xe2a
+                    0x0e2a                  _PORTCbits = 0xe2a
+                    0x0e2c                  LATC = 0xe2c
+                    0x0e2c                  _LATC = 0xe2c
+                    0x0e2c                  _LATCbits = 0xe2c
+                    0x0e2e                  ODCC = 0xe2e
+                    0x0e2e                  _ODCC = 0xe2e
+                    0x0e2e                  _ODCCbits = 0xe2e
+                    0x0e30                  CNENC = 0xe30
+                    0x0e30                  _CNENC = 0xe30
+                    0x0e30                  _CNENCbits = 0xe30
+                    0x0e32                  CNPUC = 0xe32
+                    0x0e32                  _CNPUC = 0xe32
+                    0x0e32                  _CNPUCbits = 0xe32
+                    0x0e34                  CNPDC = 0xe34
+                    0x0e34                  _CNPDC = 0xe34
+                    0x0e34                  _CNPDCbits = 0xe34
+                    0x0e36                  ANSELC = 0xe36
+                    0x0e36                  _ANSELC = 0xe36
+                    0x0e36                  _ANSELCbits = 0xe36
+                    0x0e38                  SR1C = 0xe38
+                    0x0e38                  _SR1C = 0xe38
+                    0x0e38                  _SR1Cbits = 0xe38
+                    0x0e3a                  SR0C = 0xe3a
+                    0x0e3a                  _SR0C = 0xe3a
+                    0x0e3a                  _SR0Cbits = 0xe3a
                     0x0f80                  FEXL = 0xf80
                     0x0f80                  _FEXL = 0xf80
                     0x0f82                  FEXU = 0xf82
@@ -1692,30 +1682,30 @@ LOAD default_isr
 LOAD data_init
 
 .debug_pubtypes
-                  0x000018        0x1e9
+                  0x000018        0x1f5
  .debug_pubtypes
-                  0x000018        0x1e9 build/default/debug/newmain.o
+                  0x000018        0x1f5 build/default/debug/newmain.o
 
 __c30_signature
-                  0x000201         0x18
+                  0x00020d         0x18
  __c30_signature
-                  0x000201          0x6 build/default/debug/newmain.o
+                  0x00020d          0x6 build/default/debug/newmain.o
  __c30_signature
-                  0x000207          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt0_extendedep.o)
+                  0x000213          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt0_extendedep.o)
  __c30_signature
-                  0x00020d          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(data_init_extended.o)
+                  0x000219          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(data_init_extended.o)
  __c30_signature
-                  0x000213          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
+                  0x00021f          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
 
-.nbss               0x1050          0x8
- .nbss              0x1050          0x8 build/default/debug/newmain.o
-                    0x1050                  _ledbuff
+_00000000063C0780650da663
+                    0x1000         0x40
+ _00000000063C0780650da663
+                    0x1000         0x40 build/default/debug/newmain.o
+                    0x1000                  _ecan1MsgBuf
 
-_00000000062656E0649ee451
-                    0x1080         0x40
- _00000000062656E0649ee451
-                    0x1080         0x40 build/default/debug/newmain.o
-                    0x1080                  _ecan1MsgBuf
+.bss                0x1040         0x1a
+ .bss               0x1040         0x1a build/default/debug/newmain.o
+                    0x1040                  _ledbuff
 
 .config_CTXT2     0x02abc4          0x2
  .config_CTXT2    0x02abc4          0x2 build/default/debug/newmain.o
@@ -1769,14 +1759,14 @@ _00000000062656E0649ee451
 .config_BSLIM     0x02ab90          0x2
  .config_BSLIM    0x02ab90          0x2 build/default/debug/newmain.o
 
-.text             0x000300        0x19a
- .text            0x000300        0x19a build/default/debug/newmain.o
+.text             0x000300        0x1e0
+ .text            0x000300        0x1e0 build/default/debug/newmain.o
                   0x000300                  _writeLed
-                  0x00035a                  _main
+                  0x0003b6                  _main
 
-.init.delay32     0x00049a         0x1c
- .init.delay32    0x00049a         0x1c c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
-                  0x00049a                  ___delay32
+.init.delay32     0x0004e0         0x1c
+ .init.delay32    0x0004e0         0x1c c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(delay32ep.Leo)
+                  0x0004e0                  ___delay32
 
-.dinit            0x0004b6          0xe
- .dinit           0x0004b6          0xe data_init
+.dinit            0x0004fc          0xe
+ .dinit           0x0004fc          0xe data_init

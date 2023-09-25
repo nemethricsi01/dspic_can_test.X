@@ -86,37 +86,84 @@ uint8_t ledbuff[25];
 
 void writeLed(uint32_t color)
 {
-    LATBbits.LATB3 = 1;
     int i;
-    for( i = 23;i>=0;i--)
+    for( i = 24;i>=0;i--)
     {
-       if(color&1)
+       if(color&1)//1
        {
-           ledbuff[i] = 0xfc;
+           ledbuff[i] = 0xFC;
        }
-       else
+       else//0
        {
-           ledbuff[i] = 0x80;
+           ledbuff[i] = 0xC0;
        }
-       color = color/2;
+       color = color>>1;
     }
-    ledbuff[24] = 0x80;
-    LATBbits.LATB3 = 0;
     for(i = 0;i< 8;i++)
     {
         SPI1BUF = ledbuff[i];
     }
-    while(SPI1STATbits.SRMPT != 0);
+    if(ledbuff[7] == 0xFC)
+    {
+       Nop(); 
+       Nop(); 
+       Nop(); 
+       Nop(); 
+       Nop(); 
+       Nop();
+       
+    }
+    else if(ledbuff[7] == 0xC0)
+    {
+       Nop(); 
+       Nop(); 
+       Nop(); 
+       Nop(); 
+       Nop(); 
+       Nop();
+       Nop();
+       Nop();
+       Nop();
+       Nop();
+       Nop();
+       
+       
+    }
+    
     for(i = 8;i< 16;i++)
     {
         SPI1BUF = ledbuff[i];
     }
-    while(SPI1STATbits.SRMPT != 0);
-    for(i = 16;i< 24;i++)
+    if(ledbuff[15] == 0xFC)
+    {
+       Nop(); 
+       Nop(); 
+       Nop(); 
+       Nop(); 
+       Nop(); 
+       Nop();  
+    }
+    else if(ledbuff[15] == 0xC0)
+    {
+       Nop(); 
+       Nop(); 
+       Nop(); 
+       Nop(); 
+       Nop(); 
+       Nop();
+       Nop();
+       Nop();
+       Nop();
+       Nop();
+       Nop();  
+    }
+    for(i = 16;i< 25;i++)
     {
         SPI1BUF = ledbuff[i];
     }
-    while(SPI1STATbits.SRMPT != 0);
+     for( i =0;i<10;i++);
+     for( i =0;i<10;i++);
+//    while(SPI1STATbits.SRMPT != 0);
 }
 void main(void) 
 {
@@ -126,11 +173,11 @@ void main(void)
     TRISBbits.TRISB3 = 0;
     TRISBbits.TRISB8 = 0;
     
-    RPOR4bits.RP43R = 0b001110;
-    RPINR26bits.C1RXR = 0x2a;
+    RPOR4bits.RP43R = 0b001110;//CANTX
+    RPINR26bits.C1RXR = 0x2a;//CANRX
     TRISBbits.TRISB10 = 1;
     TRISBbits.TRISB11 = 0;
-    
+    TRISAbits.TRISA9 = 1;
     
     
     C1CTRL1bits.REQOP = 0b100;//set config mode
@@ -176,8 +223,8 @@ void main(void)
  
  
  
- SPI1CON1bits.SPRE = 0b110;
- SPI1CON1bits.CKE = 0;
+ SPI1CON1bits.SPRE = 0b101;
+ SPI1CON1bits.CKE = 1;
  SPI1CON1bits.PPRE = 0b11;
  SPI1CON1bits.MODE16 = 0;
  SPI1CON2bits.SPIBEN = 1;
@@ -193,14 +240,14 @@ void main(void)
     {
         
         int i;
-        for(i = 0;i<5;i++)
+        for(i = 0;i<24;i++)
         {
-            writeLed(0x000200);
+            writeLed(0x000000);
         }
         __delay_ms(500);
-        for(i = 0;i<5;i++)
+        for(i = 0;i<24;i++)
         {
-            writeLed(0x020000);
+            writeLed(0x000001);
         }
         
         __delay_ms(500);
