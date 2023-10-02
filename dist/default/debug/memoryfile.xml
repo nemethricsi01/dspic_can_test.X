@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project>
-  <executable name="dist/default/production/dspic_can_test.X.production.elf">
+  <executable name="dist/default/debug/dspic_can_test.X.debug.elf">
     <memory name="data">
       <units>bytes</units>
       <length>16384</length>
-      <used>106</used>
-      <free>16278</free>
+      <used>182</used>
+      <free>16202</free>
     </memory>
     <memory name="program">
       <units>bytes</units>
       <length>261696</length>
-      <used>2268</used>
-      <free>259428</free>
+      <used>2010</used>
+      <free>259686</free>
     </memory>
   </executable>
 </project>

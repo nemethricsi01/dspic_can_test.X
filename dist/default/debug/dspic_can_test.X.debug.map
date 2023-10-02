@@ -4,10 +4,17 @@ Tool Name:
   c:\program files\microchip\xc16\v1.60\bin\bin\..\bin/elf-ld.exe
 
 Command:
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00002c9c.00 \
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00002c9c.01 \
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00002c9c.02 \
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00002c9c.03 \
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00002c9c.04 \
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00002c9c.05 \
+  -TC:\\Users\\nemet\\AppData\\Local\\Temp\\tmp00002c9c.06 \
   -p33EV256GM104 \
   --mdfp=C:/Program Files/Microchip/MPLABX/v6.10/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.3.79/xc16 \
   -o \
-  dist/default/production/dspic_can_test.X.production.elf \
+  dist/default/debug/dspic_can_test.X.debug.elf \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/.. \
   -LC:/Program Files/Microchip/MPLABX/v6.10/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.3.79/xc16/bin/../support/dsPIC33E/gld \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../lib \
@@ -18,10 +25,12 @@ Command:
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../support/dsPIC33C/gld \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../support/dsPIC33E/gld \
   -Lc:/program files/microchip/xc16/v1.60/bin/bin/../../support/dsPIC33F/gld \
-  build/default/production/newmain.o \
+  build/default/debug/newmain.o \
   --local-stack \
   --defsym=__MPLAB_BUILD=1 \
-  -Tp33EV256GM104.gld.00 \
+  --defsym=__MPLAB_DEBUG=1 \
+  --defsym=__DEBUG=1 \
+  -Tp33EV256GM104.gld.07 \
   --stack=16 \
   --check-sections \
   --data-init \
@@ -33,10 +42,10 @@ Command:
   --stackguard=16 \
   --no-force-link \
   --smart-io \
-  -Map=dist/default/production/dspic_can_test.X.production.map \
+  -Map=dist/default/debug/dspic_can_test.X.debug.map \
   --report-mem \
   --memorysummary \
-  dist/default/production/memoryfile.xml \
+  dist/default/debug/memoryfile.xml \
   -start-group \
   --library=lega-pic30-elf \
   --library=m-elf \
@@ -87,21 +96,28 @@ Default Scalar Model: Small
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200               0x100           0x180  (384)
-.text                        0x300               0x4d4           0x73e  (1854)
-.dinit                       0x7d4                0x14            0x1e  (30)
+.text                        0x300               0x428           0x63c  (1596)
+.dinit                       0x728                0x14            0x1e  (30)
 
-                 Total "program" memory used (bytes):          0x8dc  (2268) <1%
+                 Total "program" memory used (bytes):          0x7da  (2010) <1%
 
 
 "data" Memory  [Origin = 0x1000, Length = 0x4000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-.nbss                       0x1000                   0             0x8  (8)
-.bss                        0x1008                   0            0x22  (34)
-_00000000064177806513007f    0x1040                   0            0x40  (64)
+reserve_data_0x1000         0x1000                0x1c            0x1c  (28)
+reserve_data_0x101c         0x101c                 0x2             0x2  (2)
+reserve_data_0x101e         0x101e                 0x2             0x2  (2)
+reserve_data_0x1020         0x1020                 0x2             0x2  (2)
+reserve_data_0x1022         0x1022                 0x2             0x2  (2)
+reserve_data_0x1024         0x1024                 0x4             0x4  (4)
+reserve_data_0x1028         0x1028                0x28            0x28  (40)
+.nbss                       0x1050                   0             0x4  (4)
+.bss                        0x1054                   0            0x22  (34)
+_00000000063997806512e36d    0x1080                   0            0x40  (64)
 
-                 Total "data" memory used (bytes):           0x6a  (106) <1%
+                 Total "data" memory used (bytes):           0xb6  (182) 1%
 
 
 Dynamic Memory Usage
@@ -109,28 +125,26 @@ Dynamic Memory Usage
 region                     address                      maximum length  (dec)
 ------                     -------                      ---------------------
 heap                             0                                   0  (0)
-stack                       0x1080                              0x3f80  (16256)
+stack                       0x10c0                              0x3f40  (16192)
 
-                 Maximum dynamic memory (bytes):         0x3f80  (16256)
+                 Maximum dynamic memory (bytes):         0x3f40  (16192)
 
 Info: Project is using a large data memory model when small data memory model is sufficient.
 
 
 External Symbols in Data Memory (by address):
 
-                    0x1000                  _buttonBuff
-                    0x1004                  _lastbuttons
-                    0x1008                  _ledbuff
-                    0x1021                  _buttons
-                    0x1040                  _ecan1MsgBuf
+                    0x1050                  _buttonBuff
+                    0x1054                  _ledbuff
+                    0x106d                  _buttons
+                    0x1080                  _ecan1MsgBuf
 
 External Symbols in Data Memory (by name):
 
-                    0x1000                  _buttonBuff
-                    0x1021                  _buttons
-                    0x1040                  _ecan1MsgBuf
-                    0x1004                  _lastbuttons
-                    0x1008                  _ledbuff
+                    0x1050                  _buttonBuff
+                    0x106d                  _buttons
+                    0x1080                  _ecan1MsgBuf
+                    0x1054                  _ledbuff
 
 External Symbols in Program Memory (by address):
 
@@ -142,8 +156,8 @@ External Symbols in Program Memory (by address):
                   0x000300                  _writeLed
                   0x000422                  _setpixel
                   0x00046c                  _gpio_init
-                  0x000496                  _readButtons
-                  0x0005f2                  _main
+                  0x00048e                  _readButtons
+                  0x0005da                  _main
                   0x02ab80                  __FSEC.sec
 
 External Symbols in Program Memory (by name):
@@ -155,8 +169,8 @@ External Symbols in Program Memory (by name):
                   0x00023c                  __psv_init
                   0x000200                  __resetPRI
                   0x00046c                  _gpio_init
-                  0x0005f2                  _main
-                  0x000496                  _readButtons
+                  0x0005da                  _main
+                  0x00048e                  _readButtons
                   0x000422                  _setpixel
                   0x000300                  _writeLed
 
@@ -185,8 +199,45 @@ FALTREG          0x02abc4           0x000002
 
 Linker script and memory map
 
-LOAD build/default/production/newmain.o
+
+reserve_data_0x1000
+                    0x1000         0x1c
+                    0x101c                  . = 0x1c
+ *fill*             0x1000         0x1c00
+
+reserve_data_0x101c
+                    0x101c          0x2
+                    0x101e                  . = 0x2
+ *fill*             0x101c          0x200
+
+reserve_data_0x101e
+                    0x101e          0x2
+                    0x1020                  . = 0x2
+ *fill*             0x101e          0x200
+
+reserve_data_0x1020
+                    0x1020          0x2
+                    0x1022                  . = 0x2
+ *fill*             0x1020          0x200
+
+reserve_data_0x1022
+                    0x1022          0x2
+                    0x1024                  . = 0x2
+ *fill*             0x1022          0x200
+
+reserve_data_0x1024
+                    0x1024          0x4
+                    0x1028                  . = 0x4
+ *fill*             0x1024          0x400
+
+reserve_data_0x1028
+                    0x1028         0x28
+                    0x1050                  . = 0x28
+ *fill*             0x1028         0x2800
+LOAD build/default/debug/newmain.o
                     0x0001                  __MPLAB_BUILD = 0x1
+                    0x0001                  __MPLAB_DEBUG = 0x1
+                    0x0001                  __DEBUG = 0x1
 LOAD p33EV256GM104
 LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libfx-elf.a
                     0x2ab80                  __FSEC = 0x2ab80
@@ -289,26 +340,26 @@ __FALTREG
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x1fa5
+.debug_info       0x000000       0x1f85
  *(.debug_info)
- .debug_info      0x000000       0x1fa5 build/default/production/newmain.o
+ .debug_info      0x000000       0x1f85 build/default/debug/newmain.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x17f
+.debug_abbrev     0x000000        0x168
  *(.debug_abbrev)
- .debug_abbrev    0x000000        0x17f build/default/production/newmain.o
+ .debug_abbrev    0x000000        0x168 build/default/debug/newmain.o
 
-.debug_line       0x000000        0x1f0
+.debug_line       0x000000        0x1c7
  *(.debug_line)
- .debug_line      0x000000        0x1f0 build/default/production/newmain.o
+ .debug_line      0x000000        0x1c7 build/default/debug/newmain.o
 
 .debug_frame      0x000000         0x96
  *(.debug_frame)
- .debug_frame     0x000000         0x96 build/default/production/newmain.o
+ .debug_frame     0x000000         0x96 build/default/debug/newmain.o
 
-.debug_str        0x000000        0x107
+.debug_str        0x000000         0xfb
  *(.debug_str)
- .debug_str       0x000000        0x107 build/default/production/newmain.o
+ .debug_str       0x000000         0xfb build/default/debug/newmain.o
 
 .debug_loc
  *(.debug_loc)
@@ -317,10 +368,10 @@ __FALTREG
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000         0x9a
+                  0x000000         0x8a
  *(.debug_pubnames)
  .debug_pubnames
-                  0x000000         0x9a build/default/production/newmain.o
+                  0x000000         0x8a build/default/debug/newmain.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -328,7 +379,7 @@ __FALTREG
 .debug_aranges    0x000000         0x18
  *(.debug_aranges)
  .debug_aranges
-                  0x000000         0x18 build/default/production/newmain.o
+                  0x000000         0x18 build/default/debug/newmain.o
                     0x0000                  WREG0 = 0x0
                     0x0000                  _WREG0 = 0x0
                     0x0002                  WREG1 = 0x2
@@ -1680,7 +1731,7 @@ LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a
 LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\libm-elf.a
 LOAD c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-c-elf.a
 END GROUP
-OUTPUT(dist/default/production/dspic_can_test.X.production.elf elf32-pic30)
+OUTPUT(dist/default/debug/dspic_can_test.X.debug.elf elf32-pic30)
 LOAD /CW/_FSEC
 LOAD default_isr
 LOAD data_init
@@ -1688,92 +1739,91 @@ LOAD data_init
 .debug_pubtypes
                   0x000018        0x2ad
  .debug_pubtypes
-                  0x000018        0x2ad build/default/production/newmain.o
+                  0x000018        0x2ad build/default/debug/newmain.o
 
 __c30_signature
                   0x0002c5         0x12
  __c30_signature
-                  0x0002c5          0x6 build/default/production/newmain.o
+                  0x0002c5          0x6 build/default/debug/newmain.o
  __c30_signature
                   0x0002cb          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(crt0_extendedep.o)
  __c30_signature
                   0x0002d1          0x6 c:/program files/microchip/xc16/v1.60/bin/bin/../../lib\liblega-pic30-elf.a(data_init_extended.o)
 
-.nbss               0x1000          0x8
- .nbss              0x1000          0x8 build/default/production/newmain.o
-                    0x1000                  _buttonBuff
-                    0x1004                  _lastbuttons
+.nbss               0x1050          0x4
+ .nbss              0x1050          0x4 build/default/debug/newmain.o
+                    0x1050                  _buttonBuff
 
-_00000000064177806513007f
-                    0x1040         0x40
- _00000000064177806513007f
-                    0x1040         0x40 build/default/production/newmain.o
-                    0x1040                  _ecan1MsgBuf
+_00000000063997806512e36d
+                    0x1080         0x40
+ _00000000063997806512e36d
+                    0x1080         0x40 build/default/debug/newmain.o
+                    0x1080                  _ecan1MsgBuf
 
-.bss                0x1008         0x22
- .bss               0x1008         0x22 build/default/production/newmain.o
-                    0x1008                  _ledbuff
-                    0x1021                  _buttons
+.bss                0x1054         0x22
+ .bss               0x1054         0x22 build/default/debug/newmain.o
+                    0x1054                  _ledbuff
+                    0x106d                  _buttons
 
 .config_CTXT2     0x02abc4          0x2
- .config_CTXT2    0x02abc4          0x2 build/default/production/newmain.o
+ .config_CTXT2    0x02abc4          0x2 build/default/debug/newmain.o
 
 .config_ALTI2C1
                   0x02abc0          0x2
  .config_ALTI2C1
-                  0x02abc0          0x2 build/default/production/newmain.o
+                  0x02abc0          0x2 build/default/debug/newmain.o
 
 .config_DMTEN     0x02abbc          0x2
- .config_DMTEN    0x02abbc          0x2 build/default/production/newmain.o
+ .config_DMTEN    0x02abbc          0x2 build/default/debug/newmain.o
 
 .config_DMTCNTH
                   0x02abb8          0x2
  .config_DMTCNTH
-                  0x02abb8          0x2 build/default/production/newmain.o
+                  0x02abb8          0x2 build/default/debug/newmain.o
 
 .config_DMTCNTL
                   0x02abb4          0x2
  .config_DMTCNTL
-                  0x02abb4          0x2 build/default/production/newmain.o
+                  0x02abb4          0x2 build/default/debug/newmain.o
 
 .config_DMTIVTH
                   0x02abb0          0x2
  .config_DMTIVTH
-                  0x02abb0          0x2 build/default/production/newmain.o
+                  0x02abb0          0x2 build/default/debug/newmain.o
 
 .config_DMTIVTL
                   0x02abac          0x2
  .config_DMTIVTL
-                  0x02abac          0x2 build/default/production/newmain.o
+                  0x02abac          0x2 build/default/debug/newmain.o
 
 .config_ICS       0x02aba8          0x2
- .config_ICS      0x02aba8          0x2 build/default/production/newmain.o
+ .config_ICS      0x02aba8          0x2 build/default/debug/newmain.o
 
 .config_BOREN0    0x02aba4          0x2
  .config_BOREN0
-                  0x02aba4          0x2 build/default/production/newmain.o
+                  0x02aba4          0x2 build/default/debug/newmain.o
 
 .config_WDTWIN    0x02aba0          0x2
  .config_WDTWIN
-                  0x02aba0          0x2 build/default/production/newmain.o
+                  0x02aba0          0x2 build/default/debug/newmain.o
 
 .config_PLLKEN    0x02ab9c          0x2
  .config_PLLKEN
-                  0x02ab9c          0x2 build/default/production/newmain.o
+                  0x02ab9c          0x2 build/default/debug/newmain.o
 
 .config_IESO      0x02ab98          0x2
- .config_IESO     0x02ab98          0x2 build/default/production/newmain.o
+ .config_IESO     0x02ab98          0x2 build/default/debug/newmain.o
 
 .config_BSLIM     0x02ab90          0x2
- .config_BSLIM    0x02ab90          0x2 build/default/production/newmain.o
+ .config_BSLIM    0x02ab90          0x2 build/default/debug/newmain.o
 
-.text             0x000300        0x4d4
- .text            0x000300        0x4d4 build/default/production/newmain.o
+.text             0x000300        0x428
+ .text            0x000300        0x428 build/default/debug/newmain.o
                   0x000300                  _writeLed
                   0x000422                  _setpixel
                   0x00046c                  _gpio_init
-                  0x000496                  _readButtons
-                  0x0005f2                  _main
+                  0x00048e                  _readButtons
+                  0x0005da                  _main
 
-.dinit            0x0007d4         0x14
- .dinit           0x0007d4         0x14 data_init
+.dinit            0x000728         0x14
+ .dinit           0x000728         0x14 data_init

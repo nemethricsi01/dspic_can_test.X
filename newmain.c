@@ -81,7 +81,9 @@
 unsigned int ecan1MsgBuf[4][8]__attribute__((aligned(4 * 16)));
 
 uint8_t ledbuff[25];
-
+uint32_t buttonBuff = 0;
+uint32_t lastbuttons;
+uint8_t buttons[8];
 //uint32_t ledbuff[4];
 
 void writeLed(uint8_t R,uint8_t G,uint8_t B)
@@ -146,21 +148,117 @@ void writeLed(uint8_t R,uint8_t G,uint8_t B)
     {
         SPI1BUF = ledbuff[i];
     }
+    
+}
+void setpixel(uint8_t num, uint32_t color)
+{
+    int i;
+    for(i = 0;i<28;i++)
+        {
+        if(num == i)
+        {
+         writeLed( ( color >> 16 ) & 0xff,( color >> 8 ) & 0xff,color & 0xff); 
+         //__delay_us(300);
+        }
+        else
+        {
+            writeLed( 0,0,0); 
+            
+        }
+        
+        }
 }
 void gpio_init(void)
 {
-    TRISBbits.TRISB9 = 1;//sor1_3
-    TRISBbits.TRISB10 = 1;//sor16_18
-    TRISBbits.TRISB11 = 1;//sor19_21
-    TRISBbits.TRISB12 = 1;//sor22_25
-    TRISBbits.TRISB13 = 1;//OSZLOP_A
+    ANSELB = 0;
+    ANSELC = 0;
+    ANSELA = 0;
+    TRISBbits.TRISB9 =      1;//sor1_3
+    TRISCbits.TRISC6 =      1;//sor4_6
+    TRISCbits.TRISC7 =      1;//sor7_9
+    TRISCbits.TRISC8 =      1;//sor10_12
+    TRISCbits.TRISC9 =      1;//sor13_15
+    TRISBbits.TRISB10 =     1;//sor16_18
+    TRISBbits.TRISB11 =     1;//sor19_21
+    TRISBbits.TRISB12 =     1;//sor22_25
+    
+    TRISBbits.TRISB13 =     1;//OSZLOP_A
+    TRISAbits.TRISA10 =     1;//OSZLOP_B
+    TRISAbits.TRISA7 =      1;//OSZLOP_C
+    
+    
+    TRISAbits.TRISA0 =      0;//VEZ1
+    TRISAbits.TRISA1 =      0;//VEZ2
+    TRISBbits.TRISB0 =      0;//VEZ3
+    TRISBbits.TRISB1 =      0;//VEZ4
     
     
     
-    TRISCbits.TRISC6 = 1;//sor4_6
-    TRISCbits.TRISC7 = 1;//sor7_9
-    TRISCbits.TRISC8 = 1;//sor10_12
-    TRISCbits.TRISC9 = 1;//sor13_15
+}
+
+void readButtons(void)
+{   
+    CNPUBbits.CNPUB9 = 1;
+    CNPUBbits.CNPUB10 = 1;
+    CNPUBbits.CNPUB11 = 1;
+    CNPUBbits.CNPUB12 = 1;
+    CNPUCbits.CNPUC6 = 1;
+    CNPUCbits.CNPUC7 = 1;
+    CNPUCbits.CNPUC8 = 1;
+    CNPUCbits.CNPUC9 = 1;
+    int x = 0;
+    for(x = 0;x<3;x++)
+    {
+        if(x == 0)
+        {
+            TRISAbits.TRISA7 =  0;//OSZLOP_C
+            TRISAbits.TRISA10 = 0;//OSZLOP_B
+            TRISBbits.TRISB13 = 0;//OSZLOP_A
+            LATAbits.LATA7 =    1;
+            LATAbits.LATA10 =   1;
+            LATBbits.LATB13 =   0;
+        }
+        if(x == 1)
+        {
+            TRISAbits.TRISA7 =  0;//OSZLOP_C
+            TRISAbits.TRISA10 = 0;//OSZLOP_B
+            TRISBbits.TRISB13 = 0;//OSZLOP_A
+            LATAbits.LATA7 =    1;
+            LATAbits.LATA10 =   0;
+            LATBbits.LATB13 =   1;
+        }
+        if(x == 2)
+        {
+            TRISAbits.TRISA7 =  0;//OSZLOP_C
+            TRISAbits.TRISA10 = 0;//OSZLOP_B
+            TRISBbits.TRISB13 = 0;//OSZLOP_A
+            LATAbits.LATA7 =    0;
+            LATAbits.LATA10 =   1;
+            LATBbits.LATB13 =   1;
+        }
+        buttons[0] = PORTBbits.RB9;
+        buttons[1] = PORTCbits.RC6;
+        buttons[2] = PORTCbits.RC7;
+        buttons[3] = PORTCbits.RC8;
+        buttons[4] = PORTCbits.RC9;
+        buttons[5] = PORTBbits.RB10;
+        buttons[6] = PORTBbits.RB11;
+        buttons[7] = PORTBbits.RB12;
+
+       uint32_t i;
+       for(i = 0;i<8;i++)
+       {
+           if(buttons[i] == 0)
+           {
+               buttonBuff |= 1l<<((i*3)+x);
+           }
+           else
+           {
+            buttonBuff &= ~(1l<<((i*3)+x)); 
+               //buttonBuff= 0;
+           }
+       }
+    }
 }
 void main(void) 
 {
@@ -170,7 +268,6 @@ void main(void)
     TRISBbits.TRISB3 = 0;
     TRISBbits.TRISB8 = 0;
     
-    RPOR4bits.RP43R = 0b001110;//CANTX
     RPINR26bits.C1RXR = 0x2a;//CANRX
     TRISBbits.TRISB10 = 1;
     TRISBbits.TRISB11 = 0;
@@ -229,27 +326,88 @@ void main(void)
  
  
  SPI1STATbits.SPIEN = 1;
- 
+ gpio_init();
  
  
  
     while(1)
     {
-        
-        int i;
-        for(i = 0;i<28;i++)
+        readButtons();
+        if(lastbuttons != buttonBuff)
         {
-            writeLed(0,0,0);
+            long i;
+            for(i = 0;i<28;i++)
+            {
+                if((buttonBuff &(1l<<i)))
+                {
+                    setpixel(i,0xa00000);
+                    if(i == 0)
+                    {
+                        LATAbits.LATA0 = 1;
+                    }
+                    if(i == 1)
+                    {
+                        LATAbits.LATA1 = 1;
+                    }
+                    if(i == 2)
+                    {
+                        LATBbits.LATB0 = 1;
+                    }
+                    if(i == 3)
+                    {
+                        LATBbits.LATB1 = 1;
+                    }
+                    
+                    
+                }
+                else
+                {
+                    if(i == 0)
+                    {
+                        LATAbits.LATA0 = 0;
+                    }
+                    if(i == 1)
+                    {
+                        LATAbits.LATA1 = 0;
+                    }
+                    if(i == 2)
+                    {
+                        LATBbits.LATB0 = 0;
+                    }
+                    if(i == 3)
+                    {
+                        LATBbits.LATB1 = 0;
+                    }
+                            
+                    
+                }
+            }
+            lastbuttons = buttonBuff;
         }
-        __delay_ms(1000);
-        for(i = 0;i<28;i++)
-        {
-            writeLed(10,0,10);
-        }
-        while(1);
         
-        __delay_ms(1000);
-        
+//        for(i = 0;i<28;i++)
+//        {
+//            writeLed(0,32,0);
+//        }
+//        
+//        
+//        __delay_ms(2000);
+//        for(i = 0;i<28;i++)
+//        {
+//            writeLed(0,0,255/2);
+//        }
+//        
+//        
+//        __delay_ms(2000);
+//        for(i = 0;i<28;i++)
+//        {
+//            writeLed(0,0,0);
+//        }
+//        
+//        
+//        __delay_ms(2000);
+//        
+//        
     }
     return;
 }
