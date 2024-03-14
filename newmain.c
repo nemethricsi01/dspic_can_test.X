@@ -332,82 +332,82 @@ void main(void)
  
     while(1)
     {
-        readButtons();
-        if(lastbuttons != buttonBuff)
+//        readButtons();
+//        if(lastbuttons != buttonBuff)
+//        {
+//            long i;
+//            for(i = 0;i<28;i++)
+//            {
+//                if((buttonBuff &(1l<<i)))
+//                {
+//                    setpixel(i,0xa00000);
+//                    if(i == 0)
+//                    {
+//                        LATAbits.LATA0 = 1;
+//                    }
+//                    if(i == 1)
+//                    {
+//                        LATAbits.LATA1 = 1;
+//                    }
+//                    if(i == 2)
+//                    {
+//                        LATBbits.LATB0 = 1;
+//                    }
+//                    if(i == 3)
+//                    {
+//                        LATBbits.LATB1 = 1;
+//                    }
+//                    
+//                    
+//                }
+//                else
+//                {
+//                    if(i == 0)
+//                    {
+//                        LATAbits.LATA0 = 0;
+//                    }
+//                    if(i == 1)
+//                    {
+//                        LATAbits.LATA1 = 0;
+//                    }
+//                    if(i == 2)
+//                    {
+//                        LATBbits.LATB0 = 0;
+//                    }
+//                    if(i == 3)
+//                    {
+//                        LATBbits.LATB1 = 0;
+//                    }
+//                            
+//                    
+//                }
+//            }
+//            lastbuttons = buttonBuff;
+//        }
+        int i;
+        for(i = 0;i<28;i++)
         {
-            long i;
-            for(i = 0;i<28;i++)
-            {
-                if((buttonBuff &(1l<<i)))
-                {
-                    setpixel(i,0xa00000);
-                    if(i == 0)
-                    {
-                        LATAbits.LATA0 = 1;
-                    }
-                    if(i == 1)
-                    {
-                        LATAbits.LATA1 = 1;
-                    }
-                    if(i == 2)
-                    {
-                        LATBbits.LATB0 = 1;
-                    }
-                    if(i == 3)
-                    {
-                        LATBbits.LATB1 = 1;
-                    }
-                    
-                    
-                }
-                else
-                {
-                    if(i == 0)
-                    {
-                        LATAbits.LATA0 = 0;
-                    }
-                    if(i == 1)
-                    {
-                        LATAbits.LATA1 = 0;
-                    }
-                    if(i == 2)
-                    {
-                        LATBbits.LATB0 = 0;
-                    }
-                    if(i == 3)
-                    {
-                        LATBbits.LATB1 = 0;
-                    }
-                            
-                    
-                }
-            }
-            lastbuttons = buttonBuff;
+            writeLed(0,32,0);
         }
         
-//        for(i = 0;i<28;i++)
-//        {
-//            writeLed(0,32,0);
-//        }
-//        
-//        
-//        __delay_ms(2000);
-//        for(i = 0;i<28;i++)
-//        {
-//            writeLed(0,0,255/2);
-//        }
-//        
-//        
-//        __delay_ms(2000);
-//        for(i = 0;i<28;i++)
-//        {
-//            writeLed(0,0,0);
-//        }
-//        
-//        
-//        __delay_ms(2000);
-//        
-//        
+        
+        __delay_ms(2000);
+        for(i = 0;i<28;i++)
+        {
+            writeLed(0,0,255/2);
+        }
+        
+        
+        __delay_ms(2000);
+        for(i = 0;i<28;i++)
+        {
+            writeLed(0,0,0);
+        }
+        
+        
+        __delay_ms(2000);
+        
+        
     }
     return;
 }
