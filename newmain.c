@@ -2,7 +2,7 @@
  * File:   newmain.c
  * Author: nemet
  *
- * Created on 2023. június 29., 1:00
+ * Created on 2023. jï¿½nius 29., 1:00
  */
 
 
@@ -75,99 +75,73 @@
 
 #include <xc.h>
 #include <stdint.h>
-
-#define FCY 20000000//40Mhz
-#include "libpic30.h"
+#include <string.h>
+#include "delay.h"
+#include "ws2812_driver/ws2812_led.h"
+#include "ws2812_driver/color.h"
+#include "dma_driver/dma.h"
 unsigned int ecan1MsgBuf[4][8]__attribute__((aligned(4 * 16)));
-
-uint8_t ledbuff[25];
+unsigned char BufferB[25];
+unsigned char BufferA[49]  =    {
+   0b00000000,
+   0b10000000, 
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b11111100,
+   0b11111100,
+   0b11111100,
+   0b11111100,
+   0b11111100,
+   0b11111100,
+   0b11111100,
+   0b11111100,
+   0b10000000, 
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   
+   0b10000000, 
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b11111100,
+   0b11111100,
+   0b11111100,
+   0b11111100,
+   0b11111100,
+   0b11111100,
+   0b11111100,
+   0b11111100,
+   0b10000000, 
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+   0b10000000,
+};
+// Create an array of 28 LEDs
+LED leds[28];
+uint8_t ledbuff[255];
 uint32_t buttonBuff = 0;
 uint32_t lastbuttons;
 uint8_t buttons[8];
 //uint32_t ledbuff[4];
-
-void writeLed(uint8_t R,uint8_t G,uint8_t B)
-{
-    int i;
-        for( i = 0;i<24;i++)
-    {
-       
-           ledbuff[i] = 0b10000000;
-    }
-    uint8_t mask = 1;
-    for( i = 7;i>=0;i--)
-    {
-       if(R & mask)//1
-       {
-           ledbuff[i] = 0b11111100;
-       }
-       else//0
-       {
-           ledbuff[i] = 0b10000000;
-       }
-       mask = mask<<1;
-    }
-    mask = 1;
-    for( i = 15;i>=8;i--)
-    {
-       if(G & mask)//1
-       {
-           ledbuff[i] = 0b11111100;
-       }
-       else//0
-       {
-           ledbuff[i] = 0b10000000;
-       }
-       mask = mask<<1;
-    }
-    mask = 1;
-    for( i = 23;i>=16;i--)
-    {
-       if(B & mask)//1
-       {
-           ledbuff[i] = 0b11111100;
-       }
-       else//0
-       {
-           ledbuff[i] = 0b10000000;
-       }
-       mask = mask<<1;
-    }
-    for(i = 0;i< 8;i++)
-    {
-        SPI1BUF = ledbuff[i];
-    }
-    for( i =0;i<10;i++);
-    for(i = 8;i< 16;i++)
-    {
-        SPI1BUF = ledbuff[i];
-    }
-    
-    for( i =0;i<10;i++);
-    for(i = 16;i< 24;i++)
-    {
-        SPI1BUF = ledbuff[i];
-    }
-    
-}
-void setpixel(uint8_t num, uint32_t color)
-{
-    int i;
-    for(i = 0;i<28;i++)
-        {
-        if(num == i)
-        {
-         writeLed( ( color >> 16 ) & 0xff,( color >> 8 ) & 0xff,color & 0xff); 
-         //__delay_us(300);
-        }
-        else
-        {
-            writeLed( 0,0,0); 
-            
-        }
-        
-        }
-}
+ uint8_t buff[25];
 void gpio_init(void)
 {
     ANSELB = 0;
@@ -267,147 +241,78 @@ void main(void)
     PLLFBDbits.PLLDIV = 78;
     TRISBbits.TRISB3 = 0;
     TRISBbits.TRISB8 = 0;
+//    __builtin_enable_interrupts(); // Enable global interrupts
     
-    RPINR26bits.C1RXR = 0x2a;//CANRX
-    TRISBbits.TRISB10 = 1;
-    TRISBbits.TRISB11 = 0;
-    TRISAbits.TRISA9 = 1;
-    
-    
-    C1CTRL1bits.REQOP = 0b100;//set config mode
-    while(C1CTRL1bits.OPMODE != 0b100);
-    
-    C1CFG1 = 0x3f;//2*64, 1 jump width
-    C1CFG2bits.PRSEG = 0b01;//propagation segment 2xTq
-    C1CFG2bits.SEG1PH = 0b110;// 7xTq
-    C1CFG2bits.SEG2PH = 0b101;// 6xTq
-    C1CFG2bits.SEG2PHTS = 1;//freely selectable
-    
-    
- C1CTRL1bits.WIN = 0;
- DMA0CONbits.SIZE = 0x0;
- DMA0CONbits.DIR = 0x1;
- DMA0CONbits.AMODE = 0x2;
- DMA0CONbits.MODE = 0x0;
- DMA0REQ = 70;
- DMA0CNT = 7;
- DMA0PAD = (volatile unsigned int)&C1TXD;
- DMA0STAL = (unsigned int) &ecan1MsgBuf;
- DMA0STAH = (unsigned int) &ecan1MsgBuf;
- DMA0CONbits.CHEN = 0x1;
- C1TR01CONbits.TXEN0 = 0x1;
- C1TR01CONbits.TX0PRI = 0x3;
- C1CTRL1bits.REQOP = 0;
- while(C1CTRL1bits.OPMODE != 0);
- 
- ecan1MsgBuf[0][0] = 0x0;
- 
- ecan1MsgBuf[0][1] = 0x0;
- ecan1MsgBuf[0][2] = 0x4;
- ecan1MsgBuf[0][3] = 0xa0a;
- ecan1MsgBuf[0][4] = 0x10a;
- ecan1MsgBuf[0][5] = 0x0;
+//    RPINR26bits.C1RXR = 0x2a;//CANRX
+//    TRISBbits.TRISB10 = 1;
+//    TRISBbits.TRISB11 = 0;
+//    TRISAbits.TRISA9 = 1;
+//    
+//    
+//    C1CTRL1bits.REQOP = 0b100;//set config mode
+//    while(C1CTRL1bits.OPMODE != 0b100);
+//    
+//    C1CFG1 = 0x3f;//2*64, 1 jump width
+//    C1CFG2bits.PRSEG = 0b01;//propagation segment 2xTq
+//    C1CFG2bits.SEG1PH = 0b110;// 7xTq
+//    C1CFG2bits.SEG2PH = 0b101;// 6xTq
+//    C1CFG2bits.SEG2PHTS = 1;//freely selectable
+//    
+//    
+// C1CTRL1bits.WIN = 0;
+// DMA0CONbits.SIZE = 0x0;
+// DMA0CONbits.DIR = 0x1;
+// DMA0CONbits.AMODE = 0x2;
+// DMA0CONbits.MODE = 0x0;
+// DMA0REQ = 70;
+// DMA0CNT = 7;
+// DMA0PAD = (volatile unsigned int)&C1TXD;
+// DMA0STAL = (unsigned int) &ecan1MsgBuf;
+// DMA0STAH = (unsigned int) &ecan1MsgBuf;
+// DMA0CONbits.CHEN = 0x1;
+// C1TR01CONbits.TXEN0 = 0x1;
+// C1TR01CONbits.TX0PRI = 0x3;
+// C1CTRL1bits.REQOP = 0;
+// while(C1CTRL1bits.OPMODE != 0);
+// 
+// ecan1MsgBuf[0][0] = 0x0;
+// 
+// ecan1MsgBuf[0][1] = 0x0;
+// ecan1MsgBuf[0][2] = 0x4;
+// ecan1MsgBuf[0][3] = 0xa0a;
+// ecan1MsgBuf[0][4] = 0x10a;
+// ecan1MsgBuf[0][5] = 0x0;
  
  
 // C1TR01CONbits.TXREQ0 = 0x1;
 // while(C1TR01CONbits.TXREQ0 == 1);
 
- SPI1CON1bits.MSTEN = 1;
- 
- 
- 
- 
- SPI1CON1bits.SPRE = 0b101;
- SPI1CON1bits.CKE = 1;
- SPI1CON1bits.PPRE = 0b11;
- SPI1CON1bits.MODE16 = 0;
- SPI1CON2bits.SPIBEN = 1;
- 
- 
- 
- SPI1STATbits.SPIEN = 1;
- gpio_init();
- 
- 
- 
+ ws2812_init_leds(leds, 3);
+
+
+ //gpio_init();
+
+
     while(1)
-    {
-//        readButtons();
-//        if(lastbuttons != buttonBuff)
-//        {
-//            long i;
-//            for(i = 0;i<28;i++)
-//            {
-//                if((buttonBuff &(1l<<i)))
-//                {
-//                    setpixel(i,0xa00000);
-//                    if(i == 0)
-//                    {
-//                        LATAbits.LATA0 = 1;
-//                    }
-//                    if(i == 1)
-//                    {
-//                        LATAbits.LATA1 = 1;
-//                    }
-//                    if(i == 2)
-//                    {
-//                        LATBbits.LATB0 = 1;
-//                    }
-//                    if(i == 3)
-//                    {
-//                        LATBbits.LATB1 = 1;
-//                    }
-//                    
-//                    
-//                }
-//                else
-//                {
-//                    if(i == 0)
-//                    {
-//                        LATAbits.LATA0 = 0;
-//                    }
-//                    if(i == 1)
-//                    {
-//                        LATAbits.LATA1 = 0;
-//                    }
-//                    if(i == 2)
-//                    {
-//                        LATBbits.LATB0 = 0;
-//                    }
-//                    if(i == 3)
-//                    {
-//                        LATBbits.LATB1 = 0;
-//                    }
-//                            
-//                    
-//                }
-//            }
-//            lastbuttons = buttonBuff;
-//        }
-        int i;
-        for(i = 0;i<28;i++)
-        {
-            writeLed(0,32,0);
-        }
-        
-        
-        __delay_ms(2000);
-        for(i = 0;i<28;i++)
-        {
-            writeLed(0,0,255/2);
-        }
-        
-        
-        __delay_ms(2000);
-        for(i = 0;i<28;i++)
-        {
-            writeLed(0,0,0);
-        }
-        
-        
-        __delay_ms(2000);
-        
-        
+    {      
+        ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x010000);
+        ws2812_send_buffer(leds, NUM_LEDS);
+        __delay_ms(1000);
+        ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x000100);
+        ws2812_send_buffer(leds, NUM_LEDS);
+        __delay_ms(1000);
+        ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x000001);
+        ws2812_send_buffer(leds, NUM_LEDS);
+        __delay_ms(1000);
     }
     return;
+}
+void __attribute__((__interrupt__, no_auto_psv)) _SPI1Interrupt(void)
+{
+
+    if(IFS0bits.SPI1IF == 1)
+    {
+        IFS0bits.SPI1IF = 0;
+    }
+    
 }
