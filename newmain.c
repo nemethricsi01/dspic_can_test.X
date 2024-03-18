@@ -81,67 +81,12 @@
 #include "ws2812_driver/color.h"
 #include "dma_driver/dma.h"
 unsigned int ecan1MsgBuf[4][8]__attribute__((aligned(4 * 16)));
-unsigned char BufferB[25];
-unsigned char BufferA[49]  =    {
-   0b00000000,
-   0b10000000, 
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b11111100,
-   0b11111100,
-   0b11111100,
-   0b11111100,
-   0b11111100,
-   0b11111100,
-   0b11111100,
-   0b11111100,
-   0b10000000, 
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   
-   0b10000000, 
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b11111100,
-   0b11111100,
-   0b11111100,
-   0b11111100,
-   0b11111100,
-   0b11111100,
-   0b11111100,
-   0b11111100,
-   0b10000000, 
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-   0b10000000,
-};
+
 // Create an array of 28 LEDs
 LED leds[28];
-uint8_t ledbuff[255];
 uint32_t buttonBuff = 0;
 uint32_t lastbuttons;
 uint8_t buttons[8];
-//uint32_t ledbuff[4];
- uint8_t buff[25];
 void gpio_init(void)
 {
     ANSELB = 0;
@@ -287,23 +232,64 @@ void main(void)
 // C1TR01CONbits.TXREQ0 = 0x1;
 // while(C1TR01CONbits.TXREQ0 == 1);
 
- ws2812_init_leds(leds, 3);
+ ws2812_init_leds(leds, NUM_LEDS);
 
 
  //gpio_init();
-
+ int delay = 20;
+ int delay_slow = 500;
 
     while(1)
-    {      
-        ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x010000);
+    { 
+        for(uint32_t i= 0;i<255;i++)
+        {
+        ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
+        ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
+        ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
         ws2812_send_buffer(leds, NUM_LEDS);
-        __delay_ms(1000);
-        ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x000100);
+        if(i > 10)
+        {
+            __delay_ms(delay);
+        }
+        else
+        {
+            __delay_ms(delay_slow);
+        }
+        
+        }
+        for(uint32_t i= 255;i>0;i--)
+        {
+        ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
+        ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
+        ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
         ws2812_send_buffer(leds, NUM_LEDS);
-        __delay_ms(1000);
-        ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x000001);
-        ws2812_send_buffer(leds, NUM_LEDS);
-        __delay_ms(1000);
+        if(i <10)
+        {
+            __delay_ms(delay_slow);
+        }
+        else
+        {
+            __delay_ms(delay);
+        }
+        }
+        // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x010000);
+        // ws2812_send_buffer(leds, NUM_LEDS);
+        // __delay_ms(1000);
+        // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x000100);
+        // ws2812_send_buffer(leds, NUM_LEDS);
+        // __delay_ms(1000);
+        // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x000001);
+        // ws2812_send_buffer(leds, NUM_LEDS);
+        // __delay_ms(1000);
+        // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x050000);
+        // ws2812_send_buffer(leds, NUM_LEDS);
+        // __delay_ms(1000);
+        // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x000500);
+        // ws2812_send_buffer(leds, NUM_LEDS);
+        // __delay_ms(1000);
+        // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x000005);
+        // ws2812_send_buffer(leds, NUM_LEDS);
+        // __delay_ms(1000);
     }
     return;
 }
