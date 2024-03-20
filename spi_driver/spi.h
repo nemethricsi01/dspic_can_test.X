@@ -18,4 +18,11 @@ void spi_init(void);
  * This function enables the SPI by clearing the interrupt flag, enabling the interrupt, and enabling the SPI module.
  */
 void spi_enable(void);
+
+
+
+
+void spi2_init(void);
+
+void spi2_enable(void);
 #endif // SPI_H

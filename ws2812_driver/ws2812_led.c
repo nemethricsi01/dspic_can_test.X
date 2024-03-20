@@ -36,9 +36,9 @@ uint8_t ws2812_set_color_range(LED *leds, uint8_t num_leds, uint8_t start, uint8
         // Set the color of the LEDs in the range [start, end]
         for (uint8_t i = start; i <= end; i++)
         {
-            leds[i].R = (color >> 16) & 0xFF;
-            leds[i].G = (color >> 8) & 0xFF;
-            leds[i].B = color & 0xFF;
+           leds[i].R = ((color >> 16) & 0xFF) * 0.587; // Adjust red
+            leds[i].G = ((color >> 8) & 0xFF) * 0.299; // Adjust green
+            leds[i].B = color & 0xFF; // Keep blue the same
         }
         return 0; // Return 0 if successful
     }

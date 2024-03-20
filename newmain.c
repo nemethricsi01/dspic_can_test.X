@@ -63,7 +63,7 @@
 #pragma config DMTEN = ENABLE           // Dead Man Timer Enable Bit (Dead Man Timer is Enabled and cannot be disabled by software)
 
 // FDEVOPT
-#pragma config PWMLOCK = ON             // PWM Lock Enable Bit (Certain PWM registers may only be written after key sequence)
+#pragma config PWMLOCK = OFF             // PWM Lock Enable Bit (Certain PWM registers may only be written after key sequence)
 #pragma config ALTI2C1 = OFF            // Alternate I2C1 Pins Selection Bit (I2C1 mapped to SDA1/SCL1 pins)
 
 // FALTREG
@@ -80,41 +80,133 @@
 #include "ws2812_driver/ws2812_led.h"
 #include "ws2812_driver/color.h"
 #include "dma_driver/dma.h"
+#include "spi_driver/spi.h"
+#include "gpio_driver/gpio.h"
+#include "display_driver/display.h"
 unsigned int ecan1MsgBuf[4][8]__attribute__((aligned(4 * 16)));
 
+
+
+#define lcd_rs LATBbits.LATB7
+#define lcd_en LATBbits.LATB8
+
+#define lcdc_start	0x30	// Clear LCD
+#define lcdc_4bit	0x20	// Clear LCD
+
+#define lcdc_clear	0x01	// Clear LCD
+#define lcdc_c_home	0x02	// Cursor home
+#define lcdc_em_set	0x06	// Entry mode set
+#define lcdc_dp_ctrl	0x0C	// Display Control
+#define lcdc_cd_sht	0x10	// Cursor or Display Shift
+#define lcdc_f_set_n	0x38	// Function Set normal instruction table
+#define lcdc_f_set_e	0x39	// Function Set extra instruction table
+
+#define lcdc_bias_set	0x1C	// Bias Set
+#define lcdc_set_ICON	0x40	// Set ICON Address
+#define lcdc_P_I_C_set	0x52	// Power, ICON Control, Contrast set 
+#define lcdc_fcon_set	0x69	// Follower control
+#define lcdc_cont_set	0x74	// Contrast set 
+
+#define lcdc_s_caddr	0x40	// Set CGRAM address
+#define lcdc_s_daddr	0x80	// Set DDRAM address
+
+#define lcdc_dp_ctrl_con		0x0E	// Display Control cursor on
+#define lcdc_dp_ctrl_coff		0x0C	// Display Control cursor off
+
+const char def_char[3][8] = {
+                           0x00,0x08,0x0C,0x0E,0x0C,0x08,0x00,0x00,
+                           0x00,0x02,0x06,0x0E,0x06,0x02,0x00,0x00,
+                           0x05,0x0A,0x00,0x0E,0x11,0x11,0x0E,0x00,
+//                           0x00,0x00,0x04,0x0A,0x0A,0x11,0x00,0x00,
+//                           0x00,0x00,0x11,0x0A,0x0A,0x04,0x00,0x00,
+                          };
+uint8_t global;
+char lcdline;
+const char LCD_INIT_STRING[9] = {lcdc_f_set_e, lcdc_dp_ctrl, lcdc_em_set, lcdc_bias_set, lcdc_set_ICON, lcdc_P_I_C_set, lcdc_fcon_set, lcdc_cont_set, lcdc_f_set_n};
 // Create an array of 28 LEDs
 LED leds[28];
+
+Display display;
 uint32_t buttonBuff = 0;
 uint32_t lastbuttons;
 uint8_t buttons[8];
-void gpio_init(void)
-{
-    ANSELB = 0;
-    ANSELC = 0;
-    ANSELA = 0;
-    TRISBbits.TRISB9 =      1;//sor1_3
-    TRISCbits.TRISC6 =      1;//sor4_6
-    TRISCbits.TRISC7 =      1;//sor7_9
-    TRISCbits.TRISC8 =      1;//sor10_12
-    TRISCbits.TRISC9 =      1;//sor13_15
-    TRISBbits.TRISB10 =     1;//sor16_18
-    TRISBbits.TRISB11 =     1;//sor19_21
-    TRISBbits.TRISB12 =     1;//sor22_25
-    
-    TRISBbits.TRISB13 =     1;//OSZLOP_A
-    TRISAbits.TRISA10 =     1;//OSZLOP_B
-    TRISAbits.TRISA7 =      1;//OSZLOP_C
-    
-    
-    TRISAbits.TRISA0 =      0;//VEZ1
-    TRISAbits.TRISA1 =      0;//VEZ2
-    TRISBbits.TRISB0 =      0;//VEZ3
-    TRISBbits.TRISB1 =      0;//VEZ4
-    
-    
-    
+
+void lcd_send_nibble( char n ) 
+	{
+	LATC = (n & 0x0F) | (LATC & 0xF0);
+	__delay_us(10);
+	//lcd_en = 1;
+	__delay_us(10);
+	//lcd_en = 0;
+	}
+unsigned char reverse(unsigned char b) {
+   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+   return b;
 }
 
+void lcd_send_byte( char address, char n )
+	{
+	lcd_rs = address;
+    uint8_t temp;
+    temp = reverse(n);
+    global = temp;
+	__delay_us(10);
+	//lcd_en = 0;
+//    SPI_WriteByte(n );
+    SPI2BUF = n;
+    __delay_us(100);
+    //lcd_en = 1;
+ 	__delay_us(30);
+	}
+
+void lcd_caddr( char addr) 
+	{
+	char address;
+	address=addr*8;
+	lcd_send_byte(0,0x40|address);
+	}
+
+
+void lcd_setc(char cadd,char chr)
+	{
+	char i;
+	lcd_caddr(cadd);
+	for(i=0;i<8;i++)
+		{lcd_send_byte(1,def_char[chr][i]);}
+	}
+
+void lcd_init() 
+	{
+	char i;
+	lcd_rs = 0;
+	//lcd_en = 0;
+	__delay_ms(40);
+
+	for(i=0;i<9;++i)
+		{
+		lcd_send_byte(0,LCD_INIT_STRING[i]);
+		}
+	lcd_send_byte(0,0x01);
+	__delay_ms(2);
+	lcd_setc(0,0);	//<
+	lcd_setc(1,1);	//>
+	lcd_setc(2,2);	//?
+	}
+void lcd_gotoxy( char cx, char cy) 
+	{
+	char address;
+	lcdline = cy;
+	switch(cy) 
+		{
+    	case 1 : address=0x00; break;
+		case 2 : address=0x40; break;
+		default : address=0x00; lcdline=1; break;
+		}
+	address=(address+(cx-1));
+	lcd_send_byte(0,lcdc_s_daddr|address);
+	}
 void readButtons(void)
 {   
     CNPUBbits.CNPUB9 = 1;
@@ -184,8 +276,30 @@ void main(void)
     CLKDIVbits.PLLPRE = 3;// divide by 5 so 4Mhz
     CLKDIVbits.PLLPOST = 0b11;// div by 8
     PLLFBDbits.PLLDIV = 78;
-    TRISBbits.TRISB3 = 0;
-    TRISBbits.TRISB8 = 0;
+    
+/* Set PWM Period on Primary Time Base */
+PTPER = 1000;
+/* Set Phase Shift */
+PHASE1 = 0;
+/* Set Duty Cycles */
+
+PDC1 = 500;
+/* Set Dead Time Values */
+DTR1 = 5;
+ALTDTR1 = 5;
+/* Set PWM Mode to Push-Pull */
+IOCON1 = 0xC000;
+/* Set Primary Time Base, Edge-Aligned Mode and Independent Duty Cycles */
+PWMCON1 = 0x0000;
+/* Configure Faults */
+FCLCON1 = 0x0003;
+/* 1:8 Prescaler */
+PTCON2 = 0x0003;
+/* Enable PWM Module */
+PTCON = 0x8000;
+    
+    
+    
 //    __builtin_enable_interrupts(); // Enable global interrupts
     
 //    RPINR26bits.C1RXR = 0x2a;//CANRX
@@ -233,11 +347,18 @@ void main(void)
 // while(C1TR01CONbits.TXREQ0 == 1);
 
  ws2812_init_leds(leds, NUM_LEDS);
+ gpio_init();
+__delay_ms(1000);
+Display_Init(&display);
 
+Display_Printf(&display,0,"abcdefghijklmnop");
+Display_Printf(&display,1,"qrstuwxyz1234567");
+Display_Send(&display);
 
- //gpio_init();
  int delay = 20;
  int delay_slow = 500;
+ 
+ 
 
     while(1)
     { 

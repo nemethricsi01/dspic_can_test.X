@@ -27,5 +27,7 @@ void dma_start(void);
  */
 void dma_set_buffer(uint8_t *buffer, uint16_t length);
 // Declare your functions and classes here
-
+void dma1_init(void);
+void dma1_set_buffer(uint8_t *buffer, uint16_t length);
+void dma1_start(void);
 #endif // DMA_H
