@@ -29,7 +29,7 @@ void gpio_init(void)
     TRISBbits.TRISB0 =      0;                  //VEZ3
     TRISBbits.TRISB1 =      0;                  //VEZ4
     
-    TRISBbits.TRISB3 =      0;                  //display data/command
+    TRISBbits.TRISB7 =      0;                  //display data/command
     TRISBbits.TRISB8 =      0;                  //display reset
     RPOR1bits.RP37R =       0b001000;           //display spi
     RPOR2bits.RP38R =       0b001001;           //display spi
@@ -39,11 +39,11 @@ void gpio_init(void)
 
 void lcd_command_data_set(void)
 {
-    LATBbits.LATB3 = 1;
+    LATBbits.LATB7 = 1;
 }
 void lcd_command_data_reset(void)
 {
-    LATBbits.LATB3 = 0;
+    LATBbits.LATB7 = 0;
 }
 void lcd_reset_set(void)
 {

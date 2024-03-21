@@ -8,7 +8,7 @@
 #include "../delay.h"
 #include "../dma_driver/dma.h"
 
-uint8_t   lcd_buffer[MAX_CHARS * MAX_LINES];
+uint8_t   lcd_buffer[80];//st7036 has 80 bytes of data ram
 
 static uint8_t reverse(uint8_t b) {
    b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
@@ -18,19 +18,18 @@ static uint8_t reverse(uint8_t b) {
 }
 
 static void lcd_send_data(uint8_t data) {
-    uint8_t temp_data = reverse(data);
     lcd_command_data_set();
     spi2_send(data);
 
 }
 static void lcd_send_command(uint8_t command) {
-uint8_t temp_command = reverse(command);
+
     lcd_command_data_reset();
     spi2_send(command);
 }
 static void lcd_send_data_dma(void) {
     lcd_command_data_set();
-    dma_start();
+    dma1_start();
 }
 
 static void lcd_init_(void) {
@@ -60,7 +59,6 @@ static void lcd_init_(void) {
     __delay_ms(3);
     lcd_send_command(0x06);
     __delay_ms(100);
-    lcd_send_data('a');
 }
 
 static void lcd_set_backlight(uint8_t brightness) {//4 levels of brightness
@@ -77,8 +75,8 @@ void Display_Init(Display* display) {
     spi2_init();
     spi2_enable();
     lcd_init_();
-//dma1_init();
-//    dma1_set_buffer(lcd_buffer,32);
+    dma1_init();
+    dma1_set_buffer(lcd_buffer,80);
 
 }
 
@@ -94,15 +92,16 @@ void Display_Printf(Display* display, int line, const char* format, ...) {
 void Display_Send(Display* display) {
     // Here you would put your SPI send code.
     // For now, we'll just print the buffer to the console.
-    uint8_t ptr = 0;
-    for(int i = 0;i<MAX_LINES*MAX_CHARS+1;i++)
+    memset(lcd_buffer,'a',80);
+    for(int i = 0;i<16;i++)
     {
-        if(display->buffer[0][i] == 0)
-        {
-            i++;
-        }
-        lcd_buffer[ptr] = display->buffer[0][i];
-        ptr++;
+        
+        lcd_buffer[i] = display->buffer[0][i];
+    }
+    for(int i = 0;i<16;i++)
+    {
+        
+        lcd_buffer[i+40] = display->buffer[1][i];
     }
     lcd_send_data_dma();
     

@@ -29,7 +29,7 @@ SPI1STATbits.SPIEN = 1;// Enable SPI1 module
 void spi2_init(void)
 {
     SPI2CON1bits.MSTEN          = 1; // Set master mode
-    SPI2CON1bits.SPRE           = 0b000; // Set secondary prescale to 3:1
+    SPI2CON1bits.SPRE           = 0b011; // Set secondary prescale to 3:1
     SPI2CON1bits.CKE            = 1; // Set clock edge select (0 = data changes on clock transition from active to idle)
     SPI2CON1bits.SMP            = 0; // Set input data sample phase (0 = input data sampled at middle of data output time)
     SPI2CON1bits.CKP            = 0; // Set clock polarity (0 = idle state for clock is a low level)

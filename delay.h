@@ -2,7 +2,7 @@
  * File:   delay.h
  * Author: nemet
  *
- * Created on 2024. március 18., 1:56
+ * Created on 2024. mï¿½rcius 18., 1:56
  */
 
 #ifndef DELAY_H

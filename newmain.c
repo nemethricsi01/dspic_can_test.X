@@ -134,9 +134,9 @@ uint8_t buttons[8];
 void lcd_send_nibble( char n ) 
 	{
 	LATC = (n & 0x0F) | (LATC & 0xF0);
-	__delay_us(10);
+//	__delay_us(10);
 	//lcd_en = 1;
-	__delay_us(10);
+//	__delay_us(10);
 	//lcd_en = 0;
 	}
 unsigned char reverse(unsigned char b) {
@@ -152,13 +152,13 @@ void lcd_send_byte( char address, char n )
     uint8_t temp;
     temp = reverse(n);
     global = temp;
-	__delay_us(10);
+	// __delay_us(10);
 	//lcd_en = 0;
 //    SPI_WriteByte(n );
     SPI2BUF = n;
-    __delay_us(100);
+    // __delay_us(100);
     //lcd_en = 1;
- 	__delay_us(30);
+ 	// __delay_us(30);
 	}
 
 void lcd_caddr( char addr) 
@@ -182,14 +182,14 @@ void lcd_init()
 	char i;
 	lcd_rs = 0;
 	//lcd_en = 0;
-	__delay_ms(40);
+	// __delay_ms(40);
 
 	for(i=0;i<9;++i)
 		{
 		lcd_send_byte(0,LCD_INIT_STRING[i]);
 		}
 	lcd_send_byte(0,0x01);
-	__delay_ms(2);
+	// __delay_ms(2);
 	lcd_setc(0,0);	//<
 	lcd_setc(1,1);	//>
 	lcd_setc(2,2);	//?
@@ -299,7 +299,7 @@ PTCON2 = 0x0003;
 PTCON = 0x8000;
     
     
-    
+//    __builtin_disable_interrupts();
 //    __builtin_enable_interrupts(); // Enable global interrupts
     
 //    RPINR26bits.C1RXR = 0x2a;//CANRX
@@ -346,9 +346,11 @@ PTCON = 0x8000;
 // C1TR01CONbits.TXREQ0 = 0x1;
 // while(C1TR01CONbits.TXREQ0 == 1);
 
- ws2812_init_leds(leds, NUM_LEDS);
+
  gpio_init();
-__delay_ms(1000);
+  ws2812_init_leds(leds, NUM_LEDS);
+
+ __delay_ms(1000);
 Display_Init(&display);
 
 Display_Printf(&display,0,"abcdefghijklmnop");
@@ -357,11 +359,12 @@ Display_Send(&display);
 
  int delay = 20;
  int delay_slow = 500;
- 
+// 
  
 
     while(1)
     { 
+        LATBbits.LATB3^= 1;
         for(uint32_t i= 0;i<255;i++)
         {
         ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
@@ -370,10 +373,12 @@ Display_Send(&display);
         ws2812_send_buffer(leds, NUM_LEDS);
         if(i > 10)
         {
+            // __delay_ms(delay);
             __delay_ms(delay);
         }
         else
         {
+            // __delay_ms(delay_slow);
             __delay_ms(delay_slow);
         }
         
@@ -386,13 +391,18 @@ Display_Send(&display);
         ws2812_send_buffer(leds, NUM_LEDS);
         if(i <10)
         {
+            // __delay_ms(delay_slow);
             __delay_ms(delay_slow);
         }
         else
         {
+            // __delay_ms(delay);
             __delay_ms(delay);
         }
         }
+
+
+
         // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x010000);
         // ws2812_send_buffer(leds, NUM_LEDS);
         // __delay_ms(1000);

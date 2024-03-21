@@ -7,6 +7,7 @@
 
 
 
+
 uint8_t ledBuffer[LED_BUFFER_SIZE]; // Buffer to store the LED data
 
 uint8_t ws2812_init_leds(LED *leds, uint8_t num_leds)
@@ -17,7 +18,7 @@ uint8_t ws2812_init_leds(LED *leds, uint8_t num_leds)
         leds[i].R = 0;
         leds[i].G = 0;
         leds[i].B = 0;
-        leds[i].brightness = 0;
+        leds[i].brightness = 1;
     }
     ws2812_fill_buffer(leds, num_leds, ledBuffer); // Fill the buffer with the LED data
     dma_init(); // Initialize the DMA
