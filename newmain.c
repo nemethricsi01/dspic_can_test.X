@@ -83,6 +83,7 @@
 #include "spi_driver/spi.h"
 #include "gpio_driver/gpio.h"
 #include "display_driver/display.h"
+#include "timer/timer.h"
 unsigned int ecan1MsgBuf[4][8]__attribute__((aligned(4 * 16)));
 
 
@@ -273,10 +274,9 @@ void readButtons(void)
 }
 void main(void) 
 {
-    CLKDIVbits.PLLPRE = 3;// divide by 5 so 4Mhz
-    CLKDIVbits.PLLPOST = 0b11;// div by 8
-    PLLFBDbits.PLLDIV = 78;
-    
+    CLKDIVbits.PLLPRE = 2;// divide by 4 so 5Mhz
+    CLKDIVbits.PLLPOST = 0b01;// div by 4
+    PLLFBDbits.PLLDIV = 30;
 /* Set PWM Period on Primary Time Base */
 PTPER = 1000;
 /* Set Phase Shift */
@@ -356,50 +356,54 @@ Display_Init(&display);
 Display_Printf(&display,0,"abcdefghijklmnop");
 Display_Printf(&display,1,"qrstuwxyz1234567");
 Display_Send(&display);
-
+timer_4_init();
  int delay = 20;
  int delay_slow = 500;
 // 
  
-
+ uint16_t counter = 0;
     while(1)
     { 
-        LATBbits.LATB3^= 1;
-        for(uint32_t i= 0;i<255;i++)
-        {
-        ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
-        ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
-        ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
-        ws2812_send_buffer(leds, NUM_LEDS);
-        if(i > 10)
-        {
-            // __delay_ms(delay);
-            __delay_ms(delay);
-        }
-        else
-        {
-            // __delay_ms(delay_slow);
-            __delay_ms(delay_slow);
-        }
         
-        }
-        for(uint32_t i= 255;i>0;i--)
-        {
-        ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
-        ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
-        ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
-        ws2812_send_buffer(leds, NUM_LEDS);
-        if(i <10)
-        {
-            // __delay_ms(delay_slow);
-            __delay_ms(delay_slow);
-        }
-        else
-        {
-            // __delay_ms(delay);
-            __delay_ms(delay);
-        }
-        }
+        __delay_ms(10);
+//        Display_Printf(&display,0,"abcdefghijklmnop");
+//        Display_Printf(&display,1,"qrstuwxyz1234567");
+//        Display_Send(&display);
+//        for(uint32_t i= 0;i<255;i++)
+//        {
+//        ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
+//        ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
+//        ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
+//        ws2812_send_buffer(leds, NUM_LEDS);
+//        if(i > 10)
+//        {
+//            // __delay_ms(delay);
+//            __delay_ms(delay);
+//        }
+//        else
+//        {
+//            // __delay_ms(delay_slow);
+//            __delay_ms(delay_slow);
+//        }
+//        
+//        }
+//        for(uint32_t i= 255;i>0;i--)
+//        {
+//        ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
+//        ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
+//        ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
+//        ws2812_send_buffer(leds, NUM_LEDS);
+//        if(i <10)
+//        {
+//            // __delay_ms(delay_slow);
+//            __delay_ms(delay_slow);
+//        }
+//        else
+//        {
+//            // __delay_ms(delay);
+//            __delay_ms(delay);
+//        }
+//        }
 
 
 
@@ -423,13 +427,4 @@ Display_Send(&display);
         // __delay_ms(1000);
     }
     return;
-}
-void __attribute__((__interrupt__, no_auto_psv)) _SPI1Interrupt(void)
-{
-
-    if(IFS0bits.SPI1IF == 1)
-    {
-        IFS0bits.SPI1IF = 0;
-    }
-    
 }

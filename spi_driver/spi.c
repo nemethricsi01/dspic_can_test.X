@@ -21,8 +21,8 @@ void spi_init(void)
 }
 void spi_enable(void)
 {
-IFS0bits.SPI1IF = 0; // Clear the Interrupt flag
-IEC0bits.SPI1IE = 1; // Enable the interrupt
+//IFS0bits.SPI1IF = 0; // Clear the Interrupt flag
+//IEC0bits.SPI1IE = 1; // Enable the interrupt
 SPI1STATbits.SPIEN = 1;// Enable SPI1 module
 }
 
@@ -55,14 +55,5 @@ void spi2_send(uint8_t data)
 {
     uint8_t  temp;
     SPI2BUF = data; // Write the data to the SPI buffer
-    
-}
-void __attribute__((__interrupt__, no_auto_psv)) _SPI2Interrupt (void)
-{
-
-    if(IFS2bits.SPI2IF)
-    {
-        IFS2bits.SPI2IF = 0;
-    }
     
 }
