@@ -84,46 +84,12 @@
 #include "gpio_driver/gpio.h"
 #include "display_driver/display.h"
 #include "timer/timer.h"
-unsigned int ecan1MsgBuf[4][8]__attribute__((aligned(4 * 16)));
+#include "flash_driver/flash_demo.h"
+#include "can_driver/can.h"
 
+extern unsigned int canTxBuff[4][8]__attribute__((aligned(4 * 16)));
+extern unsigned int canRxBuff[32][8]__attribute__((aligned(32 * 16)));
 
-
-#define lcd_rs LATBbits.LATB7
-#define lcd_en LATBbits.LATB8
-
-#define lcdc_start	0x30	// Clear LCD
-#define lcdc_4bit	0x20	// Clear LCD
-
-#define lcdc_clear	0x01	// Clear LCD
-#define lcdc_c_home	0x02	// Cursor home
-#define lcdc_em_set	0x06	// Entry mode set
-#define lcdc_dp_ctrl	0x0C	// Display Control
-#define lcdc_cd_sht	0x10	// Cursor or Display Shift
-#define lcdc_f_set_n	0x38	// Function Set normal instruction table
-#define lcdc_f_set_e	0x39	// Function Set extra instruction table
-
-#define lcdc_bias_set	0x1C	// Bias Set
-#define lcdc_set_ICON	0x40	// Set ICON Address
-#define lcdc_P_I_C_set	0x52	// Power, ICON Control, Contrast set 
-#define lcdc_fcon_set	0x69	// Follower control
-#define lcdc_cont_set	0x74	// Contrast set 
-
-#define lcdc_s_caddr	0x40	// Set CGRAM address
-#define lcdc_s_daddr	0x80	// Set DDRAM address
-
-#define lcdc_dp_ctrl_con		0x0E	// Display Control cursor on
-#define lcdc_dp_ctrl_coff		0x0C	// Display Control cursor off
-
-const char def_char[3][8] = {
-                           0x00,0x08,0x0C,0x0E,0x0C,0x08,0x00,0x00,
-                           0x00,0x02,0x06,0x0E,0x06,0x02,0x00,0x00,
-                           0x05,0x0A,0x00,0x0E,0x11,0x11,0x0E,0x00,
-//                           0x00,0x00,0x04,0x0A,0x0A,0x11,0x00,0x00,
-//                           0x00,0x00,0x11,0x0A,0x0A,0x04,0x00,0x00,
-                          };
-uint8_t global;
-char lcdline;
-const char LCD_INIT_STRING[9] = {lcdc_f_set_e, lcdc_dp_ctrl, lcdc_em_set, lcdc_bias_set, lcdc_set_ICON, lcdc_P_I_C_set, lcdc_fcon_set, lcdc_cont_set, lcdc_f_set_n};
 // Create an array of 28 LEDs
 LED leds[28];
 
@@ -132,151 +98,16 @@ uint32_t buttonBuff = 0;
 uint32_t lastbuttons;
 uint8_t buttons[8];
 
-void lcd_send_nibble( char n ) 
-	{
-	LATC = (n & 0x0F) | (LATC & 0xF0);
-//	__delay_us(10);
-	//lcd_en = 1;
-//	__delay_us(10);
-	//lcd_en = 0;
-	}
-unsigned char reverse(unsigned char b) {
-   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
-   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
-   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
-   return b;
-}
-
-void lcd_send_byte( char address, char n )
-	{
-	lcd_rs = address;
-    uint8_t temp;
-    temp = reverse(n);
-    global = temp;
-	// __delay_us(10);
-	//lcd_en = 0;
-//    SPI_WriteByte(n );
-    SPI2BUF = n;
-    // __delay_us(100);
-    //lcd_en = 1;
- 	// __delay_us(30);
-	}
-
-void lcd_caddr( char addr) 
-	{
-	char address;
-	address=addr*8;
-	lcd_send_byte(0,0x40|address);
-	}
 
 
-void lcd_setc(char cadd,char chr)
-	{
-	char i;
-	lcd_caddr(cadd);
-	for(i=0;i<8;i++)
-		{lcd_send_byte(1,def_char[chr][i]);}
-	}
-
-void lcd_init() 
-	{
-	char i;
-	lcd_rs = 0;
-	//lcd_en = 0;
-	// __delay_ms(40);
-
-	for(i=0;i<9;++i)
-		{
-		lcd_send_byte(0,LCD_INIT_STRING[i]);
-		}
-	lcd_send_byte(0,0x01);
-	// __delay_ms(2);
-	lcd_setc(0,0);	//<
-	lcd_setc(1,1);	//>
-	lcd_setc(2,2);	//?
-	}
-void lcd_gotoxy( char cx, char cy) 
-	{
-	char address;
-	lcdline = cy;
-	switch(cy) 
-		{
-    	case 1 : address=0x00; break;
-		case 2 : address=0x40; break;
-		default : address=0x00; lcdline=1; break;
-		}
-	address=(address+(cx-1));
-	lcd_send_byte(0,lcdc_s_daddr|address);
-	}
-void readButtons(void)
-{   
-    CNPUBbits.CNPUB9 = 1;
-    CNPUBbits.CNPUB10 = 1;
-    CNPUBbits.CNPUB11 = 1;
-    CNPUBbits.CNPUB12 = 1;
-    CNPUCbits.CNPUC6 = 1;
-    CNPUCbits.CNPUC7 = 1;
-    CNPUCbits.CNPUC8 = 1;
-    CNPUCbits.CNPUC9 = 1;
-    int x = 0;
-    for(x = 0;x<3;x++)
-    {
-        if(x == 0)
-        {
-            TRISAbits.TRISA7 =  0;//OSZLOP_C
-            TRISAbits.TRISA10 = 0;//OSZLOP_B
-            TRISBbits.TRISB13 = 0;//OSZLOP_A
-            LATAbits.LATA7 =    1;
-            LATAbits.LATA10 =   1;
-            LATBbits.LATB13 =   0;
-        }
-        if(x == 1)
-        {
-            TRISAbits.TRISA7 =  0;//OSZLOP_C
-            TRISAbits.TRISA10 = 0;//OSZLOP_B
-            TRISBbits.TRISB13 = 0;//OSZLOP_A
-            LATAbits.LATA7 =    1;
-            LATAbits.LATA10 =   0;
-            LATBbits.LATB13 =   1;
-        }
-        if(x == 2)
-        {
-            TRISAbits.TRISA7 =  0;//OSZLOP_C
-            TRISAbits.TRISA10 = 0;//OSZLOP_B
-            TRISBbits.TRISB13 = 0;//OSZLOP_A
-            LATAbits.LATA7 =    0;
-            LATAbits.LATA10 =   1;
-            LATBbits.LATB13 =   1;
-        }
-        buttons[0] = PORTBbits.RB9;
-        buttons[1] = PORTCbits.RC6;
-        buttons[2] = PORTCbits.RC7;
-        buttons[3] = PORTCbits.RC8;
-        buttons[4] = PORTCbits.RC9;
-        buttons[5] = PORTBbits.RB10;
-        buttons[6] = PORTBbits.RB11;
-        buttons[7] = PORTBbits.RB12;
-
-       uint32_t i;
-       for(i = 0;i<8;i++)
-       {
-           if(buttons[i] == 0)
-           {
-               buttonBuff |= 1l<<((i*3)+x);
-           }
-           else
-           {
-            buttonBuff &= ~(1l<<((i*3)+x)); 
-               //buttonBuff= 0;
-           }
-       }
-    }
-}
-void main(void) 
+int main(void) 
 {
     CLKDIVbits.PLLPRE = 2;// divide by 4 so 5Mhz
     CLKDIVbits.PLLPOST = 0b01;// div by 4
     PLLFBDbits.PLLDIV = 30;
+    
+    RCONbits.SWDTEN = 0;
+    
 /* Set PWM Period on Primary Time Base */
 PTPER = 1000;
 /* Set Phase Shift */
@@ -302,129 +133,125 @@ PTCON = 0x8000;
 //    __builtin_disable_interrupts();
 //    __builtin_enable_interrupts(); // Enable global interrupts
     
-//    RPINR26bits.C1RXR = 0x2a;//CANRX
-//    TRISBbits.TRISB10 = 1;
-//    TRISBbits.TRISB11 = 0;
-//    TRISAbits.TRISA9 = 1;
-//    
-//    
-//    C1CTRL1bits.REQOP = 0b100;//set config mode
-//    while(C1CTRL1bits.OPMODE != 0b100);
-//    
-//    C1CFG1 = 0x3f;//2*64, 1 jump width
-//    C1CFG2bits.PRSEG = 0b01;//propagation segment 2xTq
-//    C1CFG2bits.SEG1PH = 0b110;// 7xTq
-//    C1CFG2bits.SEG2PH = 0b101;// 6xTq
-//    C1CFG2bits.SEG2PHTS = 1;//freely selectable
-//    
-//    
-// C1CTRL1bits.WIN = 0;
-// DMA0CONbits.SIZE = 0x0;
-// DMA0CONbits.DIR = 0x1;
-// DMA0CONbits.AMODE = 0x2;
-// DMA0CONbits.MODE = 0x0;
-// DMA0REQ = 70;
-// DMA0CNT = 7;
-// DMA0PAD = (volatile unsigned int)&C1TXD;
-// DMA0STAL = (unsigned int) &ecan1MsgBuf;
-// DMA0STAH = (unsigned int) &ecan1MsgBuf;
-// DMA0CONbits.CHEN = 0x1;
-// C1TR01CONbits.TXEN0 = 0x1;
-// C1TR01CONbits.TX0PRI = 0x3;
-// C1CTRL1bits.REQOP = 0;
-// while(C1CTRL1bits.OPMODE != 0);
-// 
-// ecan1MsgBuf[0][0] = 0x0;
-// 
-// ecan1MsgBuf[0][1] = 0x0;
-// ecan1MsgBuf[0][2] = 0x4;
-// ecan1MsgBuf[0][3] = 0xa0a;
-// ecan1MsgBuf[0][4] = 0x10a;
-// ecan1MsgBuf[0][5] = 0x0;
+RPOR5bits.RP49R = 0b001110;//can tx to rc1 (pin28)
+RPINR26 = 0x32;
+
+TRISCbits.TRISC2 = 1;//canrx
+TRISCbits.TRISC1 = 0;//cantx
+
+ANSELC = 0;
+    
+can_init();
+
+/*
+ * can buffer layout:
+ * 0.word: [15:13]-empty,[12:2]-standard id,[1]-remote req.,[0]-extended id bit
+ * 1.word: [15:12]-empty,[11:0]-extended id[17:6]
+ * 2.word: [15:10]-extended id[5:0], [9]-remote req.,[8]-must be 0,[7:5]-empty,[4]-must be 0,[3:0] data length code
+ * 3.word: [15:8]-byte1,[7-0]-byte0
+ * 4.word: same as above
+ * 
+ */
+ canTxBuff[0][0] = 0x0;
+ canTxBuff[0][1] = 0x0;
+ canTxBuff[0][2] = 0x4;
+ canTxBuff[0][3] = 0xa0a;
+ canTxBuff[0][4] = 0x10a;
+ canTxBuff[0][5] = 0x0;
  
  
-// C1TR01CONbits.TXREQ0 = 0x1;
-// while(C1TR01CONbits.TXREQ0 == 1);
+ C1TR01CONbits.TXREQ0 = 0x1;
+ while(C1TR01CONbits.TXREQ0 == 1);
 
 
  gpio_init();
-  ws2812_init_leds(leds, NUM_LEDS);
+//   ws2812_init_leds(leds, NUM_LEDS);
 
- __delay_ms(1000);
-Display_Init(&display);
+//  __delay_ms(1000);
+// Display_Init(&display);
 
-Display_Printf(&display,0,"abcdefghijklmnop");
-Display_Printf(&display,1,"qrstuwxyz1234567");
-Display_Send(&display);
-timer_4_init();
- int delay = 20;
- int delay_slow = 500;
+// Display_Printf(&display,0,"abcdefghijklmnop");
+// Display_Printf(&display,1,"qrstuwxyz1234567");
+// Display_Send(&display);
+// //timer_4_init();
+// timer_5_init();
+//  int delay = 20;
+//  int delay_slow = 500;
 // 
  
- uint16_t counter = 0;
+
+ 
+ 
+//FlashDemo();
+
+
+
+ 
     while(1)
     { 
-        
-        __delay_ms(10);
-//        Display_Printf(&display,0,"abcdefghijklmnop");
-//        Display_Printf(&display,1,"qrstuwxyz1234567");
-//        Display_Send(&display);
-//        for(uint32_t i= 0;i<255;i++)
-//        {
-//        ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
-//        ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
-//        ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
-//        ws2812_send_buffer(leds, NUM_LEDS);
-//        if(i > 10)
-//        {
-//            // __delay_ms(delay);
-//            __delay_ms(delay);
-//        }
-//        else
-//        {
-//            // __delay_ms(delay_slow);
-//            __delay_ms(delay_slow);
-//        }
-//        
-//        }
-//        for(uint32_t i= 255;i>0;i--)
-//        {
-//        ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
-//        ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
-//        ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
-//        ws2812_send_buffer(leds, NUM_LEDS);
-//        if(i <10)
-//        {
-//            // __delay_ms(delay_slow);
-//            __delay_ms(delay_slow);
-//        }
-//        else
-//        {
-//            // __delay_ms(delay);
-//            __delay_ms(delay);
-//        }
-//        }
+        /* Message was received. */
 
-
-
-        // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x010000);
-        // ws2812_send_buffer(leds, NUM_LEDS);
-        // __delay_ms(1000);
-        // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x000100);
-        // ws2812_send_buffer(leds, NUM_LEDS);
-        // __delay_ms(1000);
-        // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x000001);
-        // ws2812_send_buffer(leds, NUM_LEDS);
-        // __delay_ms(1000);
-        // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x050000);
-        // ws2812_send_buffer(leds, NUM_LEDS);
-        // __delay_ms(1000);
-        // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x000500);
-        // ws2812_send_buffer(leds, NUM_LEDS);
-        // __delay_ms(1000);
-        // ws2812_set_color_range(leds, NUM_LEDS, 0, 2, 0x000005);
-        // ws2812_send_buffer(leds, NUM_LEDS);
-        // __delay_ms(1000);
+        // __delay_ms(10);
+        // Display_Printf(&display,0,"abcdefghijklmnop");
+        // Display_Printf(&display,1,"qrstuwxyz1234567");
+        // Display_Send(&display);
+        // for(uint32_t i= 0;i<255;i++)
+        // {
+        //     ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
+        //     ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
+        //     ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
+        //     ws2812_send_buffer(leds, NUM_LEDS);
+        //     if(i > 10)
+        //     {
+        //         __delay_ms(delay);
+        //     }
+        //     else
+        //     {
+        //         __delay_ms(delay_slow);
+        //     }
+        // }
+        // for(uint32_t i= 255;i>0;i--)
+        // {
+        //     ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
+        //     ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
+        //     ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
+        //     ws2812_send_buffer(leds, NUM_LEDS);
+        //     if(i <10)
+        //     {
+        //         __delay_ms(delay_slow);
+        //     }
+        //     else
+        //     {
+        //         __delay_ms(delay);
+        //     }
+        // }
     }
-    return;
+    return 0;
+}
+void __attribute__((interrupt, no_auto_psv)) _DMA2Interrupt(void)
+{
+    IFS1bits.DMA2IF = 0; // Clear the DMA2 Interrupt Flag;
+}
+
+void __attribute__((interrupt, no_auto_psv)) _DMA3Interrupt(void)
+{
+    IFS2bits.DMA3IF = 0; // Clear the DMA3 Interrupt Flag;
+}
+void __attribute__((interrupt, no_auto_psv))_C1Interrupt(void)
+{
+    IFS2bits.C1IF = 0; // clear interrupt flag
+    if (C1INTFbits.TBIF)
+    {
+        C1INTFbits.TBIF = 0;
+    }
+
+    if (C1INTFbits.RBIF)
+    {
+
+    /*check to see if buffer 1 is full */
+    if(C1RXFUL1bits.RXFUL1)
+    {
+    }
+    C1INTFbits.RBIF = 0;
+    }
 }

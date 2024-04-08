@@ -75,7 +75,7 @@ void ws2812_fill_buffer(LED *leds, uint8_t num_leds, uint8_t *buffer)
                 if((color >> (7 - k)) & 0x01)
                     buffer[i*24 + j*8 + k + 1] = 0b11111100; // Bit is 1
                 else
-                    buffer[i*24 + j*8 + k + 1] = 0b10000000; // Bit is 0
+                    buffer[i*24 + j*8 + k + 1] = 0b11000000; // Bit is 0
             }
         }
     }

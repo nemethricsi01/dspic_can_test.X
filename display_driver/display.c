@@ -10,18 +10,13 @@
 
 uint8_t   lcd_buffer[80];//st7036 has 80 bytes of data ram
 
-static uint8_t reverse(uint8_t b) {
-   b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
-   b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
-   b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
-   return b;
-}
 
-static void lcd_send_data(uint8_t data) {
-    lcd_command_data_set();
-    spi2_send(data);
 
-}
+//static void lcd_send_data(uint8_t data) {
+//    lcd_command_data_set();
+//    spi2_send(data);
+//
+//}
 static void lcd_send_command(uint8_t command) {
 
     lcd_command_data_reset();
@@ -90,8 +85,6 @@ void Display_Printf(Display* display, int line, const char* format, ...) {
 }
 
 void Display_Send(Display* display) {
-    // Here you would put your SPI send code.
-    // For now, we'll just print the buffer to the console.
     memset(lcd_buffer,'a',80);
     for(int i = 0;i<16;i++)
     {
@@ -104,6 +97,4 @@ void Display_Send(Display* display) {
         lcd_buffer[i+40] = display->buffer[1][i];
     }
     lcd_send_data_dma();
-    
-    
 }

@@ -1,0 +1,160 @@
+make -f nbproject/Makefile-PRO_Comparison.mk SUBPROJECTS= .clean-conf
+make[1]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+rm -f  -r .ca/build/PRO_Comparison/production
+rm -f  -r .ca/dist/PRO_Comparison/production
+make[1]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+[32mCLEAN SUCCESSFUL (total time: 254ms)[0m
+make -f nbproject/Makefile-PRO_Comparison.mk SUBPROJECTS= .build-conf
+make  -f nbproject/Makefile-PRO_Comparison.mk .ca/dist/PRO_Comparison/production/dspic_can_test.X.production.hex
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+[31mOptions have been disabled due to restricted license
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   ws2812_driver/color.c  -o .ca/build/PRO_Comparison/production/ws2812_driver/color.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/PRO_Comparison/production/ws2812_driver/color.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_PRO_Comparison=PRO_Comparison      -mafrlcsj -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+Visit https://www.microchip.com/compilers to purchase a new key.
+Options have been disabled due to restricted license
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   timer/timer.c  -o .ca/build/PRO_Comparison/production/timer/timer.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/PRO_Comparison/production/timer/timer.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_PRO_Comparison=PRO_Comparison      -mafrlcsj -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+Visit https://www.microchip.com/compilers to purchase a new key.
+License check failed
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+Options have been disabled due to restricted license
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   spi_driver/spi.c  -o .ca/build/PRO_Comparison/production/spi_driver/spi.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/PRO_Comparison/production/spi_driver/spi.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_PRO_Comparison=PRO_Comparison      -mafrlcsj -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+Visit https://www.microchip.com/compilers to purchase a new key.
+License check failed
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+Options have been disabled due to restricted license
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+Visit https://www.microchip.com/compilers to purchase a new key.
+Options have been disabled due to restricted license
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   gpio_driver/gpio.c  -o .ca/build/PRO_Comparison/production/gpio_driver/gpio.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/PRO_Comparison/production/gpio_driver/gpio.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_PRO_Comparison=PRO_Comparison      -mafrlcsj -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+Visit https://www.microchip.com/compilers to purchase a new key.
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+spi_driver/spi.c: In function 'spi2_send':
+spi_driver/spi.c:56:13: warning: unused variable 'temp' [-Wunused-variable]
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+     uint8_t  temp;
+             ^~~~
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   ws2812_driver/ws2812_led.c  -o .ca/build/PRO_Comparison/production/ws2812_driver/ws2812_led.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/PRO_Comparison/production/ws2812_driver/ws2812_led.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_PRO_Comparison=PRO_Comparison      -mafrlcsj -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+spi_driver/spi.c: In function 'spi2_send':
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+spi_driver/spi.c:56:13: warning: unused variable 'temp' [-Wunused-variable]
+     uint8_t  temp;
+             ^~~~
+License check failed
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+License check failed
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+ws2812_driver/ws2812_led.c: In function 'ws2812_fill_buffer':
+ws2812_driver/ws2812_led.c:75:27: warning: 'color' may be used uninitialized in this function [-Wmaybe-uninitialized]
+                 if((color >> (7 - k)) & 0x01)
+                    ~~~~~~~^~~~~~~~~~~
+License check failed[0m
+[31mOptions have been disabled due to restricted license
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+Visit https://www.microchip.com/compilers to purchase a new key.
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   newmain.c  -o .ca/build/PRO_Comparison/production/newmain.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/PRO_Comparison/production/newmain.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_PRO_Comparison=PRO_Comparison      -mafrlcsj -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+newmain.c: In function 'main':
+newmain.c:253:11: warning: unused variable 'counter' [-Wunused-variable]
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   dma_driver/dma.c  -o .ca/build/PRO_Comparison/production/dma_driver/dma.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/PRO_Comparison/production/dma_driver/dma.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_PRO_Comparison=PRO_Comparison      -mafrlcsj -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+  uint16_t counter = 0;
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+           ^~~~~~~
+newmain.c:250:6: warning: unused variable 'delay_slow' [-Wunused-variable]
+  int delay_slow = 500;
+      ^~~~~~~~~~
+newmain.c:249:6: warning: unused variable 'delay' [-Wunused-variable]
+  int delay = 20;
+      ^~~~~
+newmain.c: In function 'main':
+newmain.c:253:11: warning: unused variable 'counter' [-Wunused-variable]
+  uint16_t counter = 0;
+           ^~~~~~~
+newmain.c:250:6: warning: unused variable 'delay_slow' [-Wunused-variable]
+  int delay_slow = 500;
+      ^~~~~~~~~~
+newmain.c:249:6: warning: unused variable 'delay' [-Wunused-variable]
+  int delay = 20;
+      ^~~~~
+License check failed
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+License check failed[0m
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   interrupts/interrupts.c  -o .ca/build/PRO_Comparison/production/interrupts/interrupts.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/PRO_Comparison/production/interrupts/interrupts.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_PRO_Comparison=PRO_Comparison      -mafrlcsj -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+[31mOptions have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.[0m
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   display_driver/display.c  -o .ca/build/PRO_Comparison/production/display_driver/display.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/PRO_Comparison/production/display_driver/display.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_PRO_Comparison=PRO_Comparison      -mafrlcsj -O0 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+[31mOptions have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+display_driver/display.c: In function 'lcd_send_data':
+display_driver/display.c:17:5: warning: implicit declaration of function 'spi2_send'; did you mean 'spi2_init'? [-Wimplicit-function-declaration]
+     spi2_send(data);
+     ^~~~~~~~~
+     spi2_init
+At top level:
+display_driver/display.c:59:13: warning: 'lcd_set_backlight' defined but not used [-Wunused-function]
+ static void lcd_set_backlight(uint8_t brightness) {//4 levels of brightness
+             ^~~~~~~~~~~~~~~~~
+display_driver/display.c:15:13: warning: 'lcd_send_data' defined but not used [-Wunused-function]
+ static void lcd_send_data(uint8_t data) {
+             ^~~~~~~~~~~~~
+display_driver/display.c: In function 'lcd_send_data':
+display_driver/display.c:17:5: warning: implicit declaration of function 'spi2_send'; did you mean 'spi2_init'? [-Wimplicit-function-declaration]
+     spi2_send(data);
+     ^~~~~~~~~
+     spi2_init
+At top level:
+display_driver/display.c:59:13: warning: 'lcd_set_backlight' defined but not used [-Wunused-function]
+ static void lcd_set_backlight(uint8_t brightness) {//4 levels of brightness
+             ^~~~~~~~~~~~~~~~~
+display_driver/display.c:15:13: warning: 'lcd_send_data' defined but not used [-Wunused-function]
+ static void lcd_send_data(uint8_t data) {
+             ^~~~~~~~~~~~~
+[0m
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   -o .ca/dist/PRO_Comparison/production/dspic_can_test.X.production.elf  .ca/build/PRO_Comparison/production/display_driver/display.o .ca/build/PRO_Comparison/production/dma_driver/dma.o .ca/build/PRO_Comparison/production/gpio_driver/gpio.o .ca/build/PRO_Comparison/production/interrupts/interrupts.o .ca/build/PRO_Comparison/production/spi_driver/spi.o .ca/build/PRO_Comparison/production/ws2812_driver/color.o .ca/build/PRO_Comparison/production/ws2812_driver/ws2812_led.o .ca/build/PRO_Comparison/production/newmain.o .ca/build/PRO_Comparison/production/timer/timer.o      -mcpu=33EV256GM104        -omf=elf -DXPRJ_PRO_Comparison=PRO_Comparison      -mafrlcsj -Wl,--local-stack,,--defsym=__MPLAB_BUILD=1,,--script=p33EV256GM104.gld,--stack=16,--check-sections,--data-init,--pack-data,--handles,--isr,--no-gc-sections,--fill-upper=0,--stackguard=16,--no-force-link,--smart-io,-Map=".ca/dist/PRO_Comparison/production/dspic_can_test.X.production.map",--report-mem,--memorysummary,.ca/dist/PRO_Comparison/production/memoryfile.xml  -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16" 
+
+PRO Optimization:
+-------------------------------------------------------------------------------
+Total program memory used (bytes):     16155 
+Total data memory used (bytes):        446 
+-------------------------------------------------------------------------------
+
+Current Optimization:
+-------------------------------------------------------------------------------
+Total program memory used (bytes):     17052 
+Total data memory used (bytes):        446 
+-------------------------------------------------------------------------------
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin"\\xc-dsc-bin2hex .ca/dist/PRO_Comparison/production/dspic_can_test.X.production.elf -a  -omf=elf   -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16" 
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+[31mOptions have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+
+Info: Loading file: C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16/bin/../support/dsPIC33E/gld\\p33EV256GM104.gld
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+
+Info: Loading file: C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16/bin/../support/dsPIC33E/gld\\p33EV256GM104.gld[0m
+[32mBUILD SUCCESSFUL (total time: 6s)[0m

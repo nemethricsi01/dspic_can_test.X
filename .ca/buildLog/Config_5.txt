@@ -1,0 +1,136 @@
+make -f nbproject/Makefile-Config_5.mk SUBPROJECTS= .clean-conf
+make[1]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+rm -f  -r .ca/build/Config_5/production
+rm -f  -r .ca/dist/Config_5/production
+make[1]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+[32mCLEAN SUCCESSFUL (total time: 203ms)[0m
+make -f nbproject/Makefile-Config_5.mk SUBPROJECTS= .build-conf
+make  -f nbproject/Makefile-Config_5.mk .ca/dist/Config_5/production/dspic_can_test.X.production.hex
+[31mOptions have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+spi_driver/spi.c: In function 'spi2_send':
+spi_driver/spi.c:56:14: warning: unused variable 'temp' [-Wunused-variable]
+     uint8_t  temp;
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+              ^~~~
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   ws2812_driver/color.c  -o .ca/build/Config_5/production/ws2812_driver/color.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/Config_5/production/ws2812_driver/color.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_Config_5=Config_5      -msmall-code -mlarge-data -msmall-scalar -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+Options have been disabled due to restricted license
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+Visit https://www.microchip.com/compilers to purchase a new key.
+newmain.c: In function 'main':
+newmain.c:253:11: warning: unused variable 'counter' [-Wunused-variable]
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+  uint16_t counter = 0;
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   spi_driver/spi.c  -o .ca/build/Config_5/production/spi_driver/spi.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/Config_5/production/spi_driver/spi.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_Config_5=Config_5      -msmall-code -mlarge-data -msmall-scalar -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+           ^~~~~~~
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+newmain.c:250:6: warning: unused variable 'delay_slow' [-Wunused-variable]
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+  int delay_slow = 500;
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   newmain.c  -o .ca/build/Config_5/production/newmain.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/Config_5/production/newmain.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_Config_5=Config_5      -msmall-code -mlarge-data -msmall-scalar -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+      ^~~~~~~~~~
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+newmain.c:249:6: warning: unused variable 'delay' [-Wunused-variable]
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+  int delay = 20;
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   ws2812_driver/ws2812_led.c  -o .ca/build/Config_5/production/ws2812_driver/ws2812_led.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/Config_5/production/ws2812_driver/ws2812_led.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_Config_5=Config_5      -msmall-code -mlarge-data -msmall-scalar -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+      ^~~~~
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+ws2812_driver/ws2812_led.c: In function 'ws2812_fill_buffer':
+ws2812_driver/ws2812_led.c:75:27: warning: 'color' may be used uninitialized in this function [-Wmaybe-uninitialized]
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   gpio_driver/gpio.c  -o .ca/build/Config_5/production/gpio_driver/gpio.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/Config_5/production/gpio_driver/gpio.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_Config_5=Config_5      -msmall-code -mlarge-data -msmall-scalar -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+                 if((color >> (7 - k)) & 0x01)
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+                    ~~~~~~~^~~~~~~~~~~
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+[0m
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   display_driver/display.c  -o .ca/build/Config_5/production/display_driver/display.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/Config_5/production/display_driver/display.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_Config_5=Config_5      -msmall-code -mlarge-data -msmall-scalar -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   interrupts/interrupts.c  -o .ca/build/Config_5/production/interrupts/interrupts.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/Config_5/production/interrupts/interrupts.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_Config_5=Config_5      -msmall-code -mlarge-data -msmall-scalar -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+[31mOptions have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+display_driver/display.c: In function 'lcd_send_data':
+display_driver/display.c:17:5: warning: implicit declaration of function 'spi2_send'; did you mean 'spi2_init'? [-Wimplicit-function-declaration]
+     spi2_send(data);
+     ^~~~~~~~~
+     spi2_init
+At top level:
+display_driver/display.c:59:13: warning: 'lcd_set_backlight' defined but not used [-Wunused-function]
+ static void lcd_set_backlight(uint8_t brightness) {//4 levels of brightness
+             ^~~~~~~~~~~~~~~~~
+display_driver/display.c:15:13: warning: 'lcd_send_data' defined but not used [-Wunused-function]
+ static void lcd_send_data(uint8_t data) {
+             ^~~~~~~~~~~~~
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.[0m
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   timer/timer.c  -o .ca/build/Config_5/production/timer/timer.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/Config_5/production/timer/timer.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_Config_5=Config_5      -msmall-code -mlarge-data -msmall-scalar -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   dma_driver/dma.c  -o .ca/build/Config_5/production/dma_driver/dma.o  -c -mcpu=33EV256GM104  -MP -MMD -MF ".ca/build/Config_5/production/dma_driver/dma.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_Config_5=Config_5      -msmall-code -mlarge-data -msmall-scalar -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16"
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+[31mOptions have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.
+Options have been disabled due to restricted license
+Visit https://www.microchip.com/compilers to purchase a new key.[0m
+[31mOptions have been disabled due to restricted license
+make[2]: Entering directory 'D:/mplabx_projektek/dspic_can_test.X'
+Visit https://www.microchip.com/compilers to purchase a new key.
+
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin\xc-dsc-gcc.exe"   -o .ca/dist/Config_5/production/dspic_can_test.X.production.elf  .ca/build/Config_5/production/display_driver/display.o .ca/build/Config_5/production/dma_driver/dma.o .ca/build/Config_5/production/gpio_driver/gpio.o .ca/build/Config_5/production/interrupts/interrupts.o .ca/build/Config_5/production/spi_driver/spi.o .ca/build/Config_5/production/ws2812_driver/color.o .ca/build/Config_5/production/ws2812_driver/ws2812_led.o .ca/build/Config_5/production/newmain.o .ca/build/Config_5/production/timer/timer.o      -mcpu=33EV256GM104        -omf=elf -DXPRJ_Config_5=Config_5      -Wl,--local-stack,,--defsym=__MPLAB_BUILD=1,,--script=p33EV256GM104.gld,--stack=16,--check-sections,--data-init,--pack-data,--handles,--isr,--no-gc-sections,--fill-upper=0,--stackguard=16,--no-force-link,--smart-io,-Map=".ca/dist/Config_5/production/dspic_can_test.X.production.map",--report-mem,--memorysummary,.ca/dist/Config_5/production/memoryfile.xml  -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16" 
+Info: Loading file: C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16/bin/../support/dsPIC33E/gld\\p33EV256GM104.gld[0m
+
+
+xc-dsc-ld 3.00 (B)
+
+Default Code Model: Small
+Default Data Model: Large
+Default Scalar Model: Small
+
+"program" Memory  [Origin = 0x200, Length = 0x2a980]
+
+section                    address   length (PC units)   length (bytes) (dec)
+-------                    -------   -----------------   --------------------
+.text                        0x200              0x2466          0x3699  (13977)
+.const                      0x2666                0x22            0x33  (51)
+.text                       0x2688               0x390           0x558  (1368)
+.dinit                      0x2a18                0x6a            0x9f  (159)
+.text                       0x2a82               0x132           0x1cb  (459)
+
+                   Total "program" memory used (bytes):         0x3e8e  (16014) 6%
+
+
+"data" Memory  [Origin = 0x1000, Length = 0x4000]
+
+section                    address      alignment gaps    total length  (dec)
+-------                    -------      --------------    -------------------
+.nbss                       0x1000                   0             0x8  (8)
+.bss                        0x1008                   0           0x134  (308)
+.bss                        0x113c                   0             0x4  (4)
+_00000000061105106602c81c    0x1140                   0            0x40  (64)
+.data                       0x1180                   0            0x3e  (62)
+
+                      Total "data" memory used (bytes):          0x1be  (446) 2%
+
+
+Dynamic Memory Usage
+
+region                     address                      maximum length  (dec)
+------                     -------                      ---------------------
+heap                             0                                   0  (0)
+stack                       0x11be                              0x3e42  (15938)
+
+                        Maximum dynamic memory (bytes):         0x3e42  (15938)
+
+"C:\Program Files\Microchip\xc-dsc\v3.00\bin"\\xc-dsc-bin2hex .ca/dist/Config_5/production/dspic_can_test.X.production.elf -a  -omf=elf   -mdfp="C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/dsPIC33EV-GM-00X-10X_DFP/1.4.243/xc16" 
+make[2]: Leaving directory 'D:/mplabx_projektek/dspic_can_test.X'
+[32mBUILD SUCCESSFUL (total time: 2s)[0m
