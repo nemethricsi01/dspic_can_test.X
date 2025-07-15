@@ -115,7 +115,7 @@ static void columns_set_pullup(void)
 
 void read_buttons(uint8_t *buttonarray)
 {
-    LATCbits.LATC4 = 0; //debug pin low
+    
     columns_set_pullup();
 
     for (int row = 0; row < NUM_ROWS; row++)
@@ -146,5 +146,5 @@ void read_buttons(uint8_t *buttonarray)
         tempArray[i] = buttonarray[buttonMapping[i]];
     }
     memcpy(buttonarray, tempArray, NUM_BUTTONS);
-    LATCbits.LATC4 = 1; //debug pin high
+    
 }

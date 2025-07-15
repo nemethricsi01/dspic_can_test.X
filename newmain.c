@@ -79,7 +79,6 @@
 #include "delay.h"
 #include "ws2812_driver/ws2812_led.h"
 #include "ws2812_driver/color.h"
-#include "dma_driver/dma.h"
 #include "spi_driver/spi.h"
 #include "gpio_driver/gpio.h"
 #include "display_driver/display.h"
@@ -180,25 +179,7 @@ ANSELC = 0;
         //         ws2812_set_color_range(leds, NUM_LEDS, i, i, COLOR_BLACK);
         //     }
         // }
-        // ws2812_send_buffer(leds, NUM_LEDS);
-
-    for (int pos = 0; pos < 24; pos++)
-    {
-        // Turn all LEDs off first
-        for (int i = 0; i < NUM_LEDS; i++)
-        {
-            ws2812_set_color_range(leds, NUM_LEDS, i, i, COLOR_BLACK);
-        }
-        // Set the current position to red
-        ws2812_set_color_range(leds, NUM_LEDS, pos, pos, COLOR_RED);
-
-        // Send the buffer to the LEDs
-        ws2812_send_buffer(leds, NUM_LEDS);
-
-        // Delay for visibility
-        __delay_ms(10);
-    }
-
+         //ws2812_send_buffer(leds, NUM_LEDS);
 
 
         // Display_Printf(&display,0,"%d", index);
@@ -206,10 +187,10 @@ ANSELC = 0;
         // Display_Send(&display);
         /* Message was received. */
 
-        // __delay_ms(10);
-        // Display_Printf(&display,0,"abcdefghijklmnop");
-        // Display_Printf(&display,1,"qrstuwxyz1234567");
-        // Display_Send(&display);
+         __delay_ms(10);
+         Display_Printf(&display,0,"abcdefghijklmnop");
+         Display_Printf(&display,1,"qrstuwxyz1234567");
+         Display_Send(&display);
 //        for(uint32_t i= 0;i<255;i++)
 //        {
 //            ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
@@ -251,4 +232,16 @@ void __attribute__((interrupt, no_auto_psv)) _DMA2Interrupt(void)
 void __attribute__((interrupt, no_auto_psv)) _DMA3Interrupt(void)
 {
     IFS2bits.DMA3IF = 0; // Clear the DMA3 Interrupt Flag;
+}
+
+void __attribute__((interrupt, no_auto_psv)) _DMA0Interrupt(void)
+{
+    IFS0bits.DMA0IF = 0; // Clear the DMA2 Interrupt Flag;
+    
+}
+
+void __attribute__((interrupt, no_auto_psv)) _DMA1Interrupt(void)
+{
+    IFS0bits.DMA1IF = 0; // Clear the DMA3 Interrupt Flag;
+    LATCbits.LATC4 = 1; //debug pin high
 }

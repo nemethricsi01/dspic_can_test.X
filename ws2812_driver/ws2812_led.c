@@ -1,8 +1,8 @@
+#include <xc.h>
 #include "ws2812_led.h"
 #include "color.h"
 #include <stdint.h>
 #include "../delay.h"
-#include "../dma_driver/dma.h"
 #include "../spi_driver/spi.h"
 
 
@@ -82,7 +82,9 @@ void ws2812_fill_buffer(LED *leds, uint8_t num_leds, uint8_t *buffer)
 }
 void ws2812_send_buffer(LED *leds, uint8_t num_leds)
 {
+    
     ws2812_fill_buffer(leds, num_leds, ledBuffer); // Fill the buffer with the LED data
     dma_set_buffer(ledBuffer, sizeof(ledBuffer)); // Set the buffer for the DMA
     dma_start(); // Start the DMA and send the data to the LEDs
+    
 }

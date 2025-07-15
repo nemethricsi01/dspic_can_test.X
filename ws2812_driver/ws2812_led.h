@@ -10,7 +10,7 @@ typedef struct {
     uint8_t brightness;
 
 } LED;
-#define NUM_LEDS 24 // Number of LEDs
+#define NUM_LEDS 30 // Number of LEDs
 #define LED_BUFFER_SIZE (1 + 24 * NUM_LEDS) // 1: First byte is all 0, 24: 8 bits for each color (R, G, B) for each LED
 
 /**

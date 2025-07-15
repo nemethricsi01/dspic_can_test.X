@@ -6,7 +6,6 @@
 #include "../gpio_driver/gpio.h"
 #include "../spi_driver/spi.h"
 #include "../delay.h"
-#include "../dma_driver/dma.h"
 
 uint8_t   lcd_buffer[80];//st7036 has 80 bytes of data ram
 
@@ -105,6 +104,7 @@ void Display_Printf(Display* display, int line, const char* format, ...) {
 }
 
 void Display_Send(Display* display) {
+    LATCbits.LATC4 = 0; //debug pin low
     memset(lcd_buffer,'a',80);
     for(int i = 0;i<16;i++)
     {
