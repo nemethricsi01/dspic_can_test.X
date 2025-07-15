@@ -96,7 +96,7 @@ LED leds[28];
 Display display;
 uint32_t buttonBuff = 0;
 uint32_t lastbuttons;
-uint8_t buttons[8];
+uint8_t buttons[NUM_BUTTONS];
 
 
 
@@ -119,7 +119,9 @@ PDC1 = 500;
 DTR1 = 5;
 ALTDTR1 = 5;
 /* Set PWM Mode to Push-Pull */
-IOCON1 = 0xC000;
+IOCON1 = 0x8000;
+IOCON2 = 0x0000;
+IOCON3 = 0x0000;
 /* Set Primary Time Base, Edge-Aligned Mode and Independent Duty Cycles */
 PWMCON1 = 0x0000;
 /* Configure Faults */
@@ -133,47 +135,19 @@ PTCON = 0x8000;
 //    __builtin_disable_interrupts();
 //    __builtin_enable_interrupts(); // Enable global interrupts
     
-RPOR5bits.RP49R = 0b001110;//can tx to rc1 (pin28)
-RPINR26 = 0x32;
-
-TRISCbits.TRISC2 = 1;//canrx
-TRISCbits.TRISC1 = 0;//cantx
-
 ANSELC = 0;
     
-can_init();
-
-/*
- * can buffer layout:
- * 0.word: [15:13]-empty,[12:2]-standard id,[1]-remote req.,[0]-extended id bit
- * 1.word: [15:12]-empty,[11:0]-extended id[17:6]
- * 2.word: [15:10]-extended id[5:0], [9]-remote req.,[8]-must be 0,[7:5]-empty,[4]-must be 0,[3:0] data length code
- * 3.word: [15:8]-byte1,[7-0]-byte0
- * 4.word: same as above
- * 
- */
- canTxBuff[0][0] = 0x0;
- canTxBuff[0][1] = 0x0;
- canTxBuff[0][2] = 0x4;
- canTxBuff[0][3] = 0xa0a;
- canTxBuff[0][4] = 0x10a;
- canTxBuff[0][5] = 0x0;
- 
- 
- C1TR01CONbits.TXREQ0 = 0x1;
- while(C1TR01CONbits.TXREQ0 == 1);
-
 
  gpio_init();
-//   ws2812_init_leds(leds, NUM_LEDS);
+ ws2812_init_leds(leds, NUM_LEDS);
 
-//  __delay_ms(1000);
-// Display_Init(&display);
+  __delay_ms(1000);
+ Display_Init(&display);
 
-// Display_Printf(&display,0,"abcdefghijklmnop");
-// Display_Printf(&display,1,"qrstuwxyz1234567");
-// Display_Send(&display);
-// //timer_4_init();
+ Display_Printf(&display,0,"abcdefghijklmnop");
+ Display_Printf(&display,1,"qrstuwxyz1234567");
+ Display_Send(&display);
+ //timer_4_init();
 // timer_5_init();
 //  int delay = 20;
 //  int delay_slow = 500;
@@ -189,27 +163,68 @@ can_init();
  
     while(1)
     { 
+        // read_buttons(buttons);
+        // __delay_ms(1);
+        // int8_t index = -1;
+        // for(int i = 0; i < NUM_BUTTONS; i++)
+        // {
+        //     if (buttons[i] == 1)
+        //     {
+        //         index = i;
+        //         // If the button is pressed, set the corresponding LED to red
+        //         ws2812_set_color_range(leds, NUM_LEDS, i, i, COLOR_RED);
+        //     }
+        //     else
+        //     {
+        //         // If the button is not pressed, set the corresponding LED to off
+        //         ws2812_set_color_range(leds, NUM_LEDS, i, i, COLOR_BLACK);
+        //     }
+        // }
+        // ws2812_send_buffer(leds, NUM_LEDS);
+
+    for (int pos = 0; pos < 24; pos++)
+    {
+        // Turn all LEDs off first
+        for (int i = 0; i < NUM_LEDS; i++)
+        {
+            ws2812_set_color_range(leds, NUM_LEDS, i, i, COLOR_BLACK);
+        }
+        // Set the current position to red
+        ws2812_set_color_range(leds, NUM_LEDS, pos, pos, COLOR_RED);
+
+        // Send the buffer to the LEDs
+        ws2812_send_buffer(leds, NUM_LEDS);
+
+        // Delay for visibility
+        __delay_ms(10);
+    }
+
+
+
+        // Display_Printf(&display,0,"%d", index);
+        // Display_Printf(&display,1,"qrstuwxyz1234567");
+        // Display_Send(&display);
         /* Message was received. */
 
         // __delay_ms(10);
         // Display_Printf(&display,0,"abcdefghijklmnop");
         // Display_Printf(&display,1,"qrstuwxyz1234567");
         // Display_Send(&display);
-        // for(uint32_t i= 0;i<255;i++)
-        // {
-        //     ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
-        //     ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
-        //     ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
-        //     ws2812_send_buffer(leds, NUM_LEDS);
-        //     if(i > 10)
-        //     {
-        //         __delay_ms(delay);
-        //     }
-        //     else
-        //     {
-        //         __delay_ms(delay_slow);
-        //     }
-        // }
+//        for(uint32_t i= 0;i<255;i++)
+//        {
+//            ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
+//            ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
+//            ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
+//            ws2812_send_buffer(leds, NUM_LEDS);
+//            if(i > 10)
+//            {
+//                __delay_ms(100);
+//            }
+//            else
+//            {
+//                __delay_ms(200);
+//            }
+//        }
         // for(uint32_t i= 255;i>0;i--)
         // {
         //     ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
@@ -236,22 +251,4 @@ void __attribute__((interrupt, no_auto_psv)) _DMA2Interrupt(void)
 void __attribute__((interrupt, no_auto_psv)) _DMA3Interrupt(void)
 {
     IFS2bits.DMA3IF = 0; // Clear the DMA3 Interrupt Flag;
-}
-void __attribute__((interrupt, no_auto_psv))_C1Interrupt(void)
-{
-    IFS2bits.C1IF = 0; // clear interrupt flag
-    if (C1INTFbits.TBIF)
-    {
-        C1INTFbits.TBIF = 0;
-    }
-
-    if (C1INTFbits.RBIF)
-    {
-
-    /*check to see if buffer 1 is full */
-    if(C1RXFUL1bits.RXFUL1)
-    {
-    }
-    C1INTFbits.RBIF = 0;
-    }
 }

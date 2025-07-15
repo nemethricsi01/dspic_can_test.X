@@ -17,6 +17,26 @@ uint8_t   lcd_buffer[80];//st7036 has 80 bytes of data ram
 //    spi2_send(data);
 //
 //}
+
+
+void lcd_command_data_set(void)
+{
+    LATBbits.LATB7 = 1;
+}
+void lcd_command_data_reset(void)
+{
+    LATBbits.LATB7 = 0;
+}
+void lcd_reset_set(void)
+{
+    LATBbits.LATB8 = 1;
+}
+void lcd_reset_reset(void)
+{
+    LATBbits.LATB8 = 0;
+}
+
+
 static void lcd_send_command(uint8_t command) {
 
     lcd_command_data_reset();

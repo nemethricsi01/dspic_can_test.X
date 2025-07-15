@@ -2,12 +2,15 @@
 #define GPIO_H
 #include <xc.h>
 #include <stdint.h>
+#include <string.h>
+#include "../delay.h"
+#define NUM_ROWS 8
+#define NUM_COLS 3
+#define NUM_BUTTONS 24
+
 
 void gpio_init(void);
 
-void lcd_command_data_set(void);
-void lcd_command_data_reset(void);
-void lcd_reset_set(void);
-void lcd_reset_reset(void);
+
 
 #endif // GPIO_H

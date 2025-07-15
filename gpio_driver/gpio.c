@@ -2,16 +2,41 @@
 
 
 
-#define NUM_ROWS 8
-#define NUM_COLS 3
-#define NUM_BUTTONS 25
-
-// Mapping from button array index to pattern index
-uint8_t buttonMapping[NUM_BUTTONS] = {4, 20, 12, 5, 21, 13, 6, 22, 14, 7, 23, 15, 8, 24, 16, 1, 17, 9, 2, 18, 10, 3, 19, 11};
-// Array to hold the button presses according to the pattern
-uint8_t patternArray[NUM_BUTTONS];
-
-
+//these indexes shows the offsets where the buttons are located in the button array right after reading them
+typedef enum {
+    BTN_IC_PHONE = 1,
+    BTN_SPEED_DIAL = 4,
+    BTN_GROUP_1 = 7,
+    BTN_GROUP_2 = 10,
+    BTN_CALLBACK = 13,
+    BTN_CALL = 16,
+    BTN_END_CALL = 19,
+    BTN_EXTRA = 22,
+            
+} ExoticButtonIndex;
+typedef enum {
+    BTN_1 = 15,
+    BTN_2 = 18,
+    BTN_3 = 21,
+    BTN_4 = 0,
+    BTN_5 = 3,
+    BTN_6 = 6,
+    BTN_7 = 9,
+    BTN_8 = 12,
+    BTN_9 = 17,
+    BTN_10 = 20,
+    BTN_11 = 23,
+    BTN_12 = 2,
+    BTN_13 = 5,
+    BTN_14 = 8,
+    BTN_15 = 11,
+    BTN_16 = 14
+} NormalButtonIndex;
+uint8_t buttonMapping[NUM_BUTTONS] = {  
+                                        BTN_1, BTN_2, BTN_3, BTN_4, BTN_5, BTN_6, BTN_7, BTN_8,
+                                        BTN_9, BTN_10, BTN_11, BTN_12, BTN_13, BTN_14, BTN_15, BTN_16,
+                                        BTN_CALL, BTN_END_CALL, BTN_EXTRA, BTN_IC_PHONE, BTN_SPEED_DIAL, BTN_GROUP_1, BTN_GROUP_2, BTN_CALLBACK
+                                    };
 
 volatile uint16_t* rowPinsTris[NUM_ROWS] = {&TRISB, &TRISC, &TRISC, &TRISC, &TRISC, &TRISB, &TRISB, &TRISB};
 uint8_t rowPinsTrisBits[NUM_ROWS] = {9, 6, 7, 8, 9, 10, 11, 12};
@@ -54,43 +79,32 @@ void gpio_init(void)
     RPOR2bits.RP38R =       0b001001;           //display spi
     TRISBbits.TRISB5 =      0;                  //display spi
     TRISBbits.TRISB6 =      0;                  //display spi
-}
-
-void lcd_command_data_set(void)
-{
-    LATBbits.LATB7 = 1;
-}
-void lcd_command_data_reset(void)
-{
-    LATBbits.LATB7 = 0;
-}
-void lcd_reset_set(void)
-{
-    LATBbits.LATB8 = 1;
-}
-void lcd_reset_reset(void)
-{
-    LATBbits.LATB8 = 0;
-}
-
-void remap_buttons(uint8_t *buttonarray)
-{
-    for (int i = 0; i < NUM_BUTTONS; i++)
-    {
-        // Subtract 1 from the mapping index because arrays are 0-based
-        patternArray[buttonMapping[i] - 1] = buttonarray[i];
-    }
-}
 
 
+    TRISCbits.TRISC4 = 0; // debug pin
+}
 
-static void rows_set_input(void)
+static void row_set_input(uint8_t row)
 {
-    for (int i = 0; i < NUM_ROWS; i++)
-    {
+
         // Set the specific bit of the TRIS register to 1
-        *rowPinsTris[i] |= (1 << rowPinsTrisBits[i]);
-    }
+        *rowPinsTris[row] |= (1 << rowPinsTrisBits[row]);
+}
+static void row_set_output(uint8_t row)
+{
+        // Set the specific bit of the TRIS register to 0
+        *rowPinsTris[row] &= ~(1 << rowPinsTrisBits[row]);
+}
+
+static void row_set_low(uint8_t row)
+{
+    // Set the specific bit of the LAT register to 0
+    *rowPinsLat[row] &= ~(1 << rowPinsLatBits[row]);
+}
+static void row_set_high(uint8_t row)
+{
+    // Set the specific bit of the LAT register to 1
+    *rowPinsLat[row] |= (1 << rowPinsLatBits[row]);
 }
 static void columns_set_pullup(void)
 {
@@ -101,18 +115,36 @@ static void columns_set_pullup(void)
 
 void read_buttons(uint8_t *buttonarray)
 {
+    LATCbits.LATC4 = 0; //debug pin low
     columns_set_pullup();
-    rows_set_input();
 
     for (int row = 0; row < NUM_ROWS; row++)
     {
-        // Set row to output
-        *rowPinsLat[row] &= ~(1 << rowPinsLatBits[row]);
-
-        // Pull low row so if any of the three buttons in the row is pressed they will pull column pins low
-        *rowPinsLat[row] &= ~(1 << rowPinsLatBits[row]);
-
-        // Set row back to input
-        *rowPinsLat[row] |= (1 << rowPinsLatBits[row]);
+        row_set_output(row);
+        row_set_low(row);
+         for(int col = 0; col < NUM_COLS; col++)
+        {
+            // Read the state of the column pin
+            if (!(*colPinsPort[col] & (1 << colPinsPortBits[col])))
+            {
+                // If the column pin is low, set the corresponding button in the array
+                buttonarray[row * NUM_COLS + col] = 1;
+            }
+            else
+            {
+                // If the column pin is high, clear the corresponding button in the array
+                buttonarray[row * NUM_COLS + col] = 0;
+            }
+        }
+//        __delay_ms(50);
+        row_set_input(row);
+        row_set_high(row);// Set the row back to high so it can be set to low again in the next iteration
     }
+    uint8_t tempArray[NUM_BUTTONS] = {0};
+    for (int i = 0; i < NUM_BUTTONS; i++)
+    {
+        tempArray[i] = buttonarray[buttonMapping[i]];
+    }
+    memcpy(buttonarray, tempArray, NUM_BUTTONS);
+    LATCbits.LATC4 = 1; //debug pin high
 }
