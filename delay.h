@@ -12,6 +12,7 @@
 extern "C" {
 #endif
 #define FCY 20000000//40Mhz
+#define DISP_SPI_DELAY 2
 #include "libpic30.h"
 
 

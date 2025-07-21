@@ -6,6 +6,8 @@
 #include "../spi_driver/spi.h"
 
 
+volatile uint8_t led_ready = 1;
+
 
 
 uint8_t ledBuffer[LED_BUFFER_SIZE]; // Buffer to store the LED data
@@ -29,6 +31,10 @@ uint8_t ws2812_init_leds(LED *leds, uint8_t num_leds)
     __delay_ms(2);
     return 0;// Return 0 if successful
 }
+
+
+
+
 uint8_t ws2812_set_color_range(LED *leds, uint8_t num_leds, uint8_t start, uint8_t end, uint32_t color)
 {
     // Check if the start and end indices are valid
@@ -82,7 +88,7 @@ void ws2812_fill_buffer(LED *leds, uint8_t num_leds, uint8_t *buffer)
 }
 void ws2812_send_buffer(LED *leds, uint8_t num_leds)
 {
-    
+    led_ready = 0;
     ws2812_fill_buffer(leds, num_leds, ledBuffer); // Fill the buffer with the LED data
     dma_set_buffer(ledBuffer, sizeof(ledBuffer)); // Set the buffer for the DMA
     dma_start(); // Start the DMA and send the data to the LEDs

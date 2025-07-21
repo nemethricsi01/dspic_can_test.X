@@ -10,7 +10,7 @@
 
 
 void gpio_init(void);
-
+void read_buttons(uint8_t *buttonarray);
 
 
 #endif // GPIO_H

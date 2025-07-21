@@ -60,7 +60,7 @@
 #pragma config DMTCNTH = 0xFFFF         // Upper 16 Bits of 32 Bit DMT Instruction Count Time-Out Value (Enter Hexadecimal value)
 
 // FDMT
-#pragma config DMTEN = ENABLE           // Dead Man Timer Enable Bit (Dead Man Timer is Enabled and cannot be disabled by software)
+#pragma config DMTEN = DISABLE           // Dead Man Timer Enable Bit (Dead Man Timer is Enabled and cannot be disabled by software)
 
 // FDEVOPT
 #pragma config PWMLOCK = OFF             // PWM Lock Enable Bit (Certain PWM registers may only be written after key sequence)
@@ -85,9 +85,8 @@
 #include "timer/timer.h"
 #include "flash_driver/flash_demo.h"
 #include "can_driver/can.h"
-
-extern unsigned int canTxBuff[4][8]__attribute__((aligned(4 * 16)));
-extern unsigned int canRxBuff[32][8]__attribute__((aligned(32 * 16)));
+#include "spi_protocol/spi_protocol.h"
+#include "led_logic/led_logic.h"
 
 // Create an array of 28 LEDs
 LED leds[28];
@@ -95,9 +94,91 @@ LED leds[28];
 Display display;
 uint32_t buttonBuff = 0;
 uint32_t lastbuttons;
-uint8_t buttons[NUM_BUTTONS];
 
+volatile uint8_t buttons[NUM_BUTTONS] = {0};
 
+extern uint8_t update_leds;
+extern volatile uint16_t buttonchecktimer;
+
+uint8_t last_ledek[LEDTOMBNUM + 1];
+
+static const uint32_t led_color_map[8] = {
+    COLOR_BLACK,    // 0
+    COLOR_BLUE,     // 1  
+    COLOR_GREEN,    // 2
+    COLOR_CYAN,     // 3
+    COLOR_RED,      // 4
+    COLOR_MAGENTA,  // 5
+    COLOR_YELLOW,   // 6
+    COLOR_WHITE     // 7
+};
+
+static const uint8_t led_index_map[28] = 
+{
+    15,
+    18,
+    21,
+    0,
+    3,
+    6,
+    9,
+    12,
+    17,
+    20,
+    24,
+    2,
+    5,
+    8,
+    11,
+    14,
+    16,
+    19,
+    1,
+    4,
+    7,
+    10,
+    13,
+    22,
+    23,
+    25,
+    26,
+    27
+};
+void init_arrays(void)
+{
+    	for(int i = 0;i < GOMBNUM/32;i++){
+		actgomb[i] = 0;
+		gomble[i] = 0;
+		gombfel[i] = 0;
+		gombdupla[i] = 0;
+		gombhosszu[i] = 0;
+		gomblend[i] = 0;
+		gombfelnd[i] = 0;
+		gomblet[i] = 0;
+		gombfelt[i] = 0;
+	}
+	for(int i = 0;i < LEDVTBNUM ;i++){
+		ledvillall[i] = 0;
+	}
+	for(int i = 0;i < LEDVTNUM;i++){
+		ledvilltimer[i] = 0;
+		//ledpwm[i] = 31;
+		ledpwm[i] = 3;
+	}
+
+	for(int i = 0;i < LEDTOMBNUM;i++){
+		ledek[i] = 0;
+		derengkimsk[i] = 0xFF;
+	}
+	for(int i = 0;i < LEDTOMBNUM + 1;i++){
+		ledvill[i] = 0;
+		ledall[i] = 0;
+	}
+	for(int i = 0;i < GOMBNUM;i++){
+		gombdtimer[i] = 0;
+		gombhtimer[i] = 0;
+	}
+}
 
 int main(void) 
 {
@@ -107,141 +188,117 @@ int main(void)
     
     RCONbits.SWDTEN = 0;
     
-/* Set PWM Period on Primary Time Base */
-PTPER = 1000;
-/* Set Phase Shift */
-PHASE1 = 0;
-/* Set Duty Cycles */
+    /* Set PWM Period on Primary Time Base */
+    PTPER = 1000;
+    /* Set Phase Shift */
+    PHASE1 = 0;
+    /* Set Duty Cycles */
 
-PDC1 = 500;
-/* Set Dead Time Values */
-DTR1 = 5;
-ALTDTR1 = 5;
-/* Set PWM Mode to Push-Pull */
-IOCON1 = 0x8000;
-IOCON2 = 0x0000;
-IOCON3 = 0x0000;
-/* Set Primary Time Base, Edge-Aligned Mode and Independent Duty Cycles */
-PWMCON1 = 0x0000;
-/* Configure Faults */
-FCLCON1 = 0x0003;
-/* 1:8 Prescaler */
-PTCON2 = 0x0003;
-/* Enable PWM Module */
-PTCON = 0x8000;
-    
-    
-//    __builtin_disable_interrupts();
-//    __builtin_enable_interrupts(); // Enable global interrupts
-    
-ANSELC = 0;
+    PDC1 = 500;
+    /* Set Dead Time Values */
+    DTR1 = 5;
+    ALTDTR1 = 5;
+    /* Set PWM Mode to Push-Pull */
+    IOCON1 = 0x8000;
+    IOCON2 = 0x0000;
+    IOCON3 = 0x0000;
+    /* Set Primary Time Base, Edge-Aligned Mode and Independent Duty Cycles */
+    PWMCON1 = 0x0000;
+    /* Configure Faults */
+    FCLCON1 = 0x0003;
+    /* 1:8 Prescaler */
+    PTCON2 = 0x0003;
+    /* Enable PWM Module */
+    PTCON = 0x8000;
     
 
- gpio_init();
- ws2812_init_leds(leds, NUM_LEDS);
+    init_arrays();
+    ledvilltmrenabled = 0;
+    memccpy(ledek, last_ledek, 0, LEDTOMBNUM + 1);
 
-  __delay_ms(1000);
- Display_Init(&display);
-
- Display_Printf(&display,0,"abcdefghijklmnop");
- Display_Printf(&display,1,"qrstuwxyz1234567");
- Display_Send(&display);
- //timer_4_init();
-// timer_5_init();
-//  int delay = 20;
-//  int delay_slow = 500;
-// 
- 
-
- 
- 
-//FlashDemo();
-
-
-
+    gpio_init();
+    ws2812_init_leds(leds, NUM_LEDS);
+    
+    Display_Init(&display);
+    Display_Printf(&display,0,"abcdefghijklmnop");
+    Display_Printf(&display,1,"qrstuwxyz1234567");
+    Display_Send(&display);
+    spi2_init();
+    spi2_enable();
+    
+    LATCbits.LATC5 = 1;
+    SPI2BUF = 0x01;
+    
+    timer_4_init();
+    timer_5_init();
+    
  
     while(1)
     { 
-        // read_buttons(buttons);
-        // __delay_ms(1);
-        // int8_t index = -1;
-        // for(int i = 0; i < NUM_BUTTONS; i++)
-        // {
-        //     if (buttons[i] == 1)
-        //     {
-        //         index = i;
-        //         // If the button is pressed, set the corresponding LED to red
-        //         ws2812_set_color_range(leds, NUM_LEDS, i, i, COLOR_RED);
-        //     }
-        //     else
-        //     {
-        //         // If the button is not pressed, set the corresponding LED to off
-        //         ws2812_set_color_range(leds, NUM_LEDS, i, i, COLOR_BLACK);
-        //     }
-        // }
-         //ws2812_send_buffer(leds, NUM_LEDS);
-
-
-        // Display_Printf(&display,0,"%d", index);
-        // Display_Printf(&display,1,"qrstuwxyz1234567");
-        // Display_Send(&display);
-        /* Message was received. */
-
-         __delay_ms(10);
-         Display_Printf(&display,0,"abcdefghijklmnop");
-         Display_Printf(&display,1,"qrstuwxyz1234567");
-         Display_Send(&display);
-//        for(uint32_t i= 0;i<255;i++)
-//        {
-//            ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
-//            ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
-//            ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
-//            ws2812_send_buffer(leds, NUM_LEDS);
-//            if(i > 10)
-//            {
-//                __delay_ms(100);
-//            }
-//            else
-//            {
-//                __delay_ms(200);
-//            }
-//        }
-        // for(uint32_t i= 255;i>0;i--)
-        // {
-        //     ws2812_set_color_range(leds, NUM_LEDS, 0, 0, i<<16);
-        //     ws2812_set_color_range(leds, NUM_LEDS, 1, 1, i<<8);
-        //     ws2812_set_color_range(leds, NUM_LEDS, 2, 2, i);
-        //     ws2812_send_buffer(leds, NUM_LEDS);
-        //     if(i <10)
-        //     {
-        //         __delay_ms(delay_slow);
-        //     }
-        //     else
-        //     {
-        //         __delay_ms(delay);
-        //     }
-        // }
+        if((led_update_timer == 0))
+        {
+            led_update_timer = LED_UPDATE_TIME;
+            
+            if(memcmp(ledek, last_ledek, LEDTOMBNUM + 1) != 0)
+            {
+                /*
+                the ledek array contains the state of the LEDs
+                0-1 byte contains the villsav leds, coded as 0-7
+                2-12 byte contains the leds, coded as 0:yellow, 1:green, 2:red, 3 is used for button originally with the shift registers
+                4-11 byte contains the leds, coded as 0:yellow, 1:green, 2:red, 3 is used for button originally with the shift registers
+                */ 
+                
+                /*
+                 * byte11 contains a led that the device does not have ( button/led19 )
+                 * so it needs to be skipped
+                 */
+                uint8_t led_idx = 0;
+                // Process bytes 2-13, handling the special case for byte 11
+                for(uint8_t byte_idx = 2; byte_idx <= 13; byte_idx++) 
+                {
+                    uint8_t temp = getledek(byte_idx);
+                    
+                    // Always process lower nibble
+                    if(byte_idx != 11 && led_idx < 24) {  // Bounds check
+                        ws2812_set_color_range(leds, NUM_LEDS, led_index_map[led_idx], 
+                                            led_index_map[led_idx], led_color_map[temp & 0x7]);
+                        led_idx++;
+                    }
+                    
+                    // Process upper nibble for all bytes except byte 11
+                    if(led_idx < 24) {  // Skip upper nibble for byte 11
+                        ws2812_set_color_range(leds, NUM_LEDS, led_index_map[led_idx], 
+                                            led_index_map[led_idx], led_color_map[(temp >> 4) & 0x7]);
+                        led_idx++;
+                    }
+                }
+                uint8_t temp = getledek(0);
+                for(uint8_t i = 0; i < VILLSAV_LED_COUNT; i++)
+                {
+                    if((temp & (1 << i)) != 0)
+                    {
+                        ws2812_set_color_range(leds, NUM_LEDS, led_index_map[i+23], 
+                                            led_index_map[i+23], COLOR_RED);
+                    }
+                    else
+                    {
+                        ws2812_set_color_range(leds, NUM_LEDS, led_index_map[i+23], 
+                                            led_index_map[i+23], COLOR_BLACK);
+                    }
+                }
+                LATCbits.LATC4 ^= 1;
+                
+                ws2812_send_buffer(leds,NUM_LEDS);
+                memcpy(last_ledek, ledek, LEDTOMBNUM + 1);
+                
+            }
+        }
+        if(buttonchecktimer == 0)
+        {
+            buttonchecktimer = 20; // Reset timer
+            read_buttons(buttons);
+        }   
     }
     return 0;
 }
-void __attribute__((interrupt, no_auto_psv)) _DMA2Interrupt(void)
-{
-    IFS1bits.DMA2IF = 0; // Clear the DMA2 Interrupt Flag;
-}
 
-void __attribute__((interrupt, no_auto_psv)) _DMA3Interrupt(void)
-{
-    IFS2bits.DMA3IF = 0; // Clear the DMA3 Interrupt Flag;
-}
-
-void __attribute__((interrupt, no_auto_psv)) _DMA0Interrupt(void)
-{
-    IFS0bits.DMA0IF = 0; // Clear the DMA2 Interrupt Flag;
-    
-}
-
-void __attribute__((interrupt, no_auto_psv)) _DMA1Interrupt(void)
-{
-    IFS0bits.DMA1IF = 0; // Clear the DMA3 Interrupt Flag;
-    LATCbits.LATC4 = 1; //debug pin high
-}

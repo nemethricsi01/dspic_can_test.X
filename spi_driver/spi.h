@@ -1,6 +1,11 @@
 #ifndef SPI_H
 #define SPI_H
 #include <stdint.h>
+
+
+
+
+
 /**
  * @brief Initializes the SPI.
  *
@@ -12,6 +17,9 @@
  * SISEL is set to 100 because we want to generate an interrupt when the last word is shifted out of the SPIxSR and the transmit is complete.
  */
 void spi_init(void);
+
+
+
 /**
  * @brief Enables the SPI.
  *
@@ -45,9 +53,6 @@ void dma_start(void);
  */
 void dma_set_buffer(uint8_t *buffer, uint16_t length);
 // Declare your functions and classes here
-void dma1_init(void);
-void dma1_set_buffer(uint8_t *buffer, uint16_t length);
-void dma1_start(void);
 
 
 void spi2_init(void);
