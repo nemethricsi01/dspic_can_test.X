@@ -235,6 +235,7 @@ int main(void)
  
     while(1)
     { 
+        LATBbits.LATB0 = !PORTCbits.RC4; // MUTE invert
         if((led_update_timer == 0))
         {
             led_update_timer = LED_UPDATE_TIME;
@@ -286,8 +287,7 @@ int main(void)
                                             led_index_map[i+23], COLOR_BLACK);
                     }
                 }
-                LATCbits.LATC4 ^= 1;
-                
+
                 ws2812_send_buffer(leds,NUM_LEDS);
                 memcpy(last_ledek, ledek, LEDTOMBNUM + 1);
                 

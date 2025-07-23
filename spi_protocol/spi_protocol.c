@@ -137,7 +137,6 @@ void process_spi(uint8_t received_byte)
 			{	//Gombok?
 				switch (spi1cnt){
 					case 0 ... ((GOMBNUM / 8) - 1):{
-//                        LATCbits.LATC4 ^= 1;
 						a = (actgomb[(spi1cnt) / 4] >> (((spi1cnt) % 4) * 8));
 						SPI2BUF = a;
                         
