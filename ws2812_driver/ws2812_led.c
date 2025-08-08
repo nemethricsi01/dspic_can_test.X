@@ -10,7 +10,7 @@ volatile uint8_t led_ready = 1;
 
 
 
-uint8_t ledBuffer[LED_BUFFER_SIZE]; // Buffer to store the LED data
+uint8_t ledBuffer[LED_BUFFER_SIZE] ; // Buffer to store the LED data
 
 uint8_t ws2812_init_leds(LED *leds, uint8_t num_leds)
 {
@@ -73,6 +73,15 @@ void ws2812_fill_buffer(LED *leds, uint8_t num_leds, uint8_t *buffer)
                 case 1: color = leds[i].G; break; // Green
                 case 2: color = leds[i].B; break; // Blue
             }
+            if(color != 0)
+            {
+                //debug breakpoint here to check color values
+                for (size_t i = 0; i < 2; i++)
+                {
+                    /* code */
+                }
+                
+            }
 
             // Iterate over each bit of the color value
             for(k = 0; k < 8; k++)
@@ -85,12 +94,19 @@ void ws2812_fill_buffer(LED *leds, uint8_t num_leds, uint8_t *buffer)
             }
         }
     }
+    // Add longer reset pulse at the end (WS2812 needs >50μs reset)
+    uint16_t reset_start = num_leds * 24 + 1;
+    for(int reset_idx = 0; reset_idx < 50; reset_idx++) {
+        buffer[reset_start + reset_idx] = 0x00;
+    }
 }
 void ws2812_send_buffer(LED *leds, uint8_t num_leds)
 {
-    led_ready = 0;
-    ws2812_fill_buffer(leds, num_leds, ledBuffer); // Fill the buffer with the LED data
-    dma_set_buffer(ledBuffer, sizeof(ledBuffer)); // Set the buffer for the DMA
-    dma_start(); // Start the DMA and send the data to the LEDs
-    
+    if(led_ready)
+    {
+        led_ready = 0;
+        ws2812_fill_buffer(leds, num_leds, ledBuffer); // Fill the buffer with the LED data
+        dma_set_buffer(ledBuffer, sizeof(ledBuffer)); // Set the buffer for the DMA
+        dma_start(); // Start the DMA and send the data to the LEDs
+    }
 }

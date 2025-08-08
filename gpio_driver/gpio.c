@@ -100,24 +100,22 @@ void gpio_init(void)
     TRISAbits.TRISA10 =     1;                  //OSZLOP_B
     TRISAbits.TRISA7 =      1;                  //OSZLOP_C
     
-    
-    TRISAbits.TRISA0 =      1;                  //VEZ1
-    TRISAbits.TRISA1 =      1;                  //VEZ2
+    TRISAbits.TRISA0 =      0;                  //VEZ1
+    TRISAbits.TRISA1 =      0;                  //VEZ2
     TRISBbits.TRISB0 =      0;                  //VEZ3, mute out pin
     TRISBbits.TRISB1 =      1;                  //VEZ4
-    
-    
+    TRISCbits.TRISC3 =      1;                  //VEZ5
+    TRISCbits.TRISC0 =      1;                  //telcsorg potis
     
     TRISBbits.TRISB7 =      0;                  //display data/command
     TRISBbits.TRISB8 =      0;                  //display reset
     TRISBbits.TRISB5 =      0;                  //display spi
     TRISBbits.TRISB6 =      0;                  //display spi
-
-
     
-    
-    TRISCbits.TRISC1 =      1; // CAN tx pin
+    TRISCbits.TRISC1 =      0; // CAN tx pin
     TRISCbits.TRISC2 =      1; // CAN rx pin
+    
+    TRISAbits.TRISA8 =      1;//UART rx pin
     
     TRISCbits.TRISC4 =      1; // Mute in pin
     TRISCbits.TRISC5 =      0; // piggy SS pin
@@ -130,7 +128,12 @@ void gpio_init(void)
     
     
     RPINR22bits.SCK2R = 0b0011001;//rpi25 
-    RPINR22bits.SDI2R = 0b0101111;//rpi47 
+    RPINR22bits.SDI2R = 0b0101111;//rpi47
+    RPINR18bits.U1RXR = 0b0011000;//rpi24
+
+
+    LATAbits.LATA0 = 0; //VEZ1
+    LATAbits.LATA1 = 0; //VEZ2
 
     columns_set_pullup();
 

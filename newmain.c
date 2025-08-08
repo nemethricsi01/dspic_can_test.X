@@ -87,11 +87,15 @@
 #include "can_driver/can.h"
 #include "spi_protocol/spi_protocol.h"
 #include "led_logic/led_logic.h"
+#include "uart_driver/uart.h"
+#include "uart_driver/uart_protocol.h"
+#include "clock/clock.h"
+#include "ui/ui.h"
 
 // Create an array of 28 LEDs
 LED leds[28];
 
-Display display;
+//Display display;
 uint32_t buttonBuff = 0;
 uint32_t lastbuttons;
 
@@ -99,6 +103,17 @@ volatile uint8_t buttons[NUM_BUTTONS] = {0};
 
 extern uint8_t update_leds;
 extern volatile uint16_t buttonchecktimer;
+
+
+
+extern volatile uint64_t one_millisecond_ticker;
+
+uint8_t own_address = 0; // Example own address
+uint8_t own_address_set = 0;
+uint8_t change_menu = 0;
+
+
+uint8_t led_safety_timer = 0; // led forced refresh for safety, if something stays lit by accident
 
 uint8_t last_ledek[LEDTOMBNUM + 1];
 
@@ -112,6 +127,10 @@ static const uint32_t led_color_map[8] = {
     COLOR_YELLOW,   // 6
     COLOR_WHITE     // 7
 };
+
+
+extern narval_msg_t narval_msg;
+
 
 static const uint8_t led_index_map[28] = 
 {
@@ -180,6 +199,52 @@ void init_arrays(void)
 	}
 }
 
+
+static void get_own_add(narval_msg_t *msg)
+{
+    if(msg->len == 4 && msg->data[3] == 0x18 && msg->ext_or_int == CMD_INT)
+    {
+        own_address = msg->data[0];
+        own_address_set = 1;
+    }
+}
+static void get_menubutton(narval_msg_t *msg)
+{
+    // Check if the message is a menu button command which is an outgoing call to 250
+    if(msg->len == 3 && (msg->data[2] == 0x1 ) && msg->ext_or_int == CMD_INT && msg->data[1] == 249)
+    {
+        change_menu = 1;
+    }
+}
+static void process_clock_commands(narval_msg_t* msg) 
+{
+    if (msg->len != 4) 
+    {
+        return; // Only process 4-byte messages
+    }
+    
+    switch (msg->data[3]) 
+    {
+        case 0x1: // Set time command
+            clock_set_time(msg->data[0] & 0x1f,  // Hours (mask to 5 bits, 0-31)
+                          msg->data[1] & 0x3f,  // Minutes (mask to 6 bits, 0-63)
+                          msg->data[2] & 0x3f); // Seconds (mask to 6 bits, 0-63)
+            break;
+            
+        case 0x2: // Set date command
+            clock_set_date((uint16_t)msg->data[0] + 2000ul, // Year (add 2000)
+                          msg->data[1],                      // Month
+                          msg->data[2]);                     // Day
+            break;
+            
+        default:
+            // Unknown command, do nothing
+            break;
+    }
+}
+
+
+
 int main(void) 
 {
     CLKDIVbits.PLLPRE = 2;// divide by 4 so 5Mhz
@@ -189,12 +254,12 @@ int main(void)
     RCONbits.SWDTEN = 0;
     
     /* Set PWM Period on Primary Time Base */
-    PTPER = 1000;
+    PTPER = 1000;//1:8 division, 40MHz in, 5kHz out
     /* Set Phase Shift */
     PHASE1 = 0;
     /* Set Duty Cycles */
 
-    PDC1 = 500;
+    PDC1 = 750;
     /* Set Dead Time Values */
     DTR1 = 5;
     ALTDTR1 = 5;
@@ -211,7 +276,7 @@ int main(void)
     /* Enable PWM Module */
     PTCON = 0x8000;
     
-
+    uart_init();
     init_arrays();
     ledvilltmrenabled = 0;
     memccpy(ledek, last_ledek, 0, LEDTOMBNUM + 1);
@@ -219,10 +284,10 @@ int main(void)
     gpio_init();
     ws2812_init_leds(leds, NUM_LEDS);
     
-    Display_Init(&display);
-    Display_Printf(&display,0,"abcdefghijklmnop");
-    Display_Printf(&display,1,"qrstuwxyz1234567");
-    Display_Send(&display);
+    // Display_Init(&display);
+    // Display_Printf(&display,0,"abcdefghijklmnop");
+    // Display_Printf(&display,1,"qrstuwxyz1234567");
+    // Display_Send(&display);
     spi2_init();
     spi2_enable();
     
@@ -231,17 +296,153 @@ int main(void)
     
     timer_4_init();
     timer_5_init();
+    timer_1_init();
+    timer_1_start();
+    clock_init();
+    ui_init();
     
  
     while(1)
     { 
         LATBbits.LATB0 = !PORTCbits.RC4; // MUTE invert
+
+        if(narval_msg.new_data_available)
+        {
+            
+            // Process the received UART message
+            get_own_add(&narval_msg);
+            process_clock_commands(&narval_msg);
+            get_menubutton(&narval_msg);
+
+            ui_update(one_millisecond_ticker, &narval_msg, own_address_set, own_address, &change_menu);
+
+            narval_msg.new_data_available = 0;
+        }
+        else
+        {
+            // If no new data, just update the UI
+            ui_update(one_millisecond_ticker, &narval_msg, own_address_set, own_address, &change_menu);
+        }
+        // ui_update(one_millisecond_ticker,&narval_msg,own_address_set, own_address, &change_menu);
+
+        // if(uart_new_data_available)
+        // {
+        //     uart_new_data_available = 0;
+            
+        //     switch(narval_msg.len)
+        //     {
+        //         case 3:
+        //         {
+        //             switch(narval_msg.data[2])
+        //             {
+        //                 case 0x1:
+        //                 {
+        //                     if(narval_msg.ext_or_int == CMD_EXT)
+        //                     {
+        //                         // External command, process accordingly
+        //                         Display_Printf(&display, 1, "\x3E%d h\xE1vja:  %d   ", narval_msg.data[0]+1, narval_msg.data[1]+1);
+        //                     }
+        //                     else
+        //                     {
+        //                         // Internal command, process accordingly
+        //                         Display_Printf(&display, 1, "\x5E%d h\xE1vja:  %d   ", narval_msg.data[0]+1, narval_msg.data[1]+1);
+        //                     }
+        //                     break;
+        //                 }
+        //                 case 0x2:
+        //                 {
+        //                     if(narval_msg.ext_or_int == CMD_EXT)
+        //                     {
+        //                         // External command, process accordingly
+        //                         Display_Printf(&display, 1, "\x3E%d bontja: %d   ", narval_msg.data[0]+1, narval_msg.data[1]+1);
+        //                     }
+        //                     else
+        //                     {
+        //                         // Internal command, process accordingly
+        //                         Display_Printf(&display, 1, "\x5E%d bontja: %d   ", narval_msg.data[0]+1, narval_msg.data[1]+1);
+        //                     }
+        //                     break;
+        //                 }
+        //                 default:
+        //                     break;
+        //             }
+        //             break;
+        //         }
+        //         case 4:
+        //         {
+        //            switch(narval_msg.data[3])
+        //             {
+        //                 case 0x1:
+        //                 {
+        //                     // Set clock from UART message
+        //                     clock_set_time(narval_msg.data[0] & 0x1f, 
+        //                                     narval_msg.data[1] & 0x3f, 
+        //                                     narval_msg.data[2] & 0x3f);
+        //                     break;
+        //                 }
+        //                 case 0x2:
+        //                 {
+        //                     // Set date from UART message
+        //                     clock_set_date((uint16_t)narval_msg.data[0]+2000ul,
+        //                                             narval_msg.data[1],
+        //                                             narval_msg.data[2]);
+        //                     break;
+        //                 }
+        //                 default:
+        //                     break;
+        //             } 
+        //             break;
+        //         }
+        //         default:
+        //             break;
+
+        //     }
+//            if((narval_msg.len == 4) && (narval_msg.data[3] == 0x1)) {
+//                // Set clock from UART message
+//                clock_set_time(narval_msg.data[0] & 0x1f, 
+//                              narval_msg.data[1] & 0x3f, 
+//                              narval_msg.data[2] & 0x3f);
+//            }
+//            if((narval_msg.len == 4) && (narval_msg.data[3] == 0x2)) 
+//            {
+//                // Set clock from UART message
+//                clock_set_date((uint16_t)narval_msg.data[0]+2000ul,
+//                narval_msg.data[1],
+//                narval_msg.data[2]);
+//            }
+            // if((narval_msg.len == 4) && (narval_msg.data[3] == 0x1))//clock info
+            // {
+            //     Display_Printf(&display,0,"%d:%d:%d", narval_msg.data[0]&0x1f, narval_msg.data[1]&0x3f, narval_msg.data[2]&0x3f);
+            // }
+            // Display_Send(&display);
+            
+        // }
+        
+        // if(one_second_flag)
+        // {
+        //     one_second_flag = 0;
+        //     clock_time_t current_time = clock_get_time();
+        //     clock_date_t current_date = clock_get_date();
+        //     Display_Printf(&display, 0, "'%02d.%02d.%02d. %2d:%02d",
+        //                     current_date.years % 100,
+        //                     current_date.months,
+        //                     current_date.days,
+        //                     current_time.hours, 
+        //                     current_time.minutes);
+        //     Display_Send(&display);
+        // }
+
+        
+
+
         if((led_update_timer == 0))
         {
+            led_safety_timer++;
             led_update_timer = LED_UPDATE_TIME;
             
-            if(memcmp(ledek, last_ledek, LEDTOMBNUM + 1) != 0)
-            {
+             if((memcmp(ledek, last_ledek, 20) != 0)||(led_safety_timer == 100))
+             {
+                led_safety_timer = 0; // Reset safety timer
                 /*
                 the ledek array contains the state of the LEDs
                 0-1 byte contains the villsav leds, coded as 0-7

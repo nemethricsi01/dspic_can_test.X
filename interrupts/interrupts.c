@@ -10,9 +10,28 @@
 
 #include "../gpio_driver/gpio.h"
 
+#include "../clock/clock.h"
+
+#include "../uart_driver/uart_protocol.h"
+
 
 extern volatile uint8_t buttons[NUM_BUTTONS];
 volatile uint16_t buttonchecktimer = 8000;
+
+
+
+
+
+void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void) {
+    if(IFS0bits.T1IF == 1)
+    {
+        LATCbits.LATC1 ^= 1;
+        clock_tick();  // Update clock every 1ms
+        IFS0bits.T1IF = 0;
+    }
+}
+
+
 void __attribute__((__interrupt__, no_auto_psv)) _T4Interrupt(void) {
     
     TMR4 = 0;
@@ -152,6 +171,29 @@ void __attribute__((__interrupt__, no_auto_psv)) _SPI1Interrupt(void)
     {
         
         IFS0bits.SPI1IF = 0;
+    }
+    if(IFS0bits.SPI1EIF == 1)
+    {
+        if(SPI1STATbits.SPIROV == 1)
+        {
+            SPI1STATbits.SPIROV = 0;
+        }
+        IFS0bits.SPI1EIF = 0;
+    }
+    
+}
+
+void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void)
+{
+
+    if(IFS0bits.U1RXIF == 1)
+    {
+        while (U1STAbits.URXDA) 
+        {
+            uint8_t received_byte = U1RXREG; // Read the received byte
+             uart_process(received_byte);
+        }
+        IFS0bits.U1RXIF = 0;
     }
     
 }

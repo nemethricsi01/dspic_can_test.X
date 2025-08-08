@@ -44,7 +44,7 @@
 
 
 
-#define LED_UPDATE_TIME 50 //20 ms timer = 2.5kHz
+#define LED_UPDATE_TIME 50 //20 ms timer = 2.5kHz timer
 
 #define VILLSAV_LED_COUNT 5
 

@@ -32,8 +32,10 @@ void dma_start(void)
 {
     // Enable DMA channel
     DMA0CONbits.CHEN        = 1;
+
     // Force DMA transfer
     DMA0REQbits.FORCE       = 1;
+    while(DMA0REQbits.FORCE != 0);
 }
 
 
@@ -82,7 +84,8 @@ void spi_init(void)
     SPI1CON1bits.MODE16         = 0; // Set word/byte mode (0 = byte mode)
     SPI1CON2bits.SPIBEN         = 1; // Enable enhanced buffer 
     SPI1CON2bits.FRMEN          = 0; // Disable framed mode
-    SPI1STATbits.SISEL          = 0b100; // Set interrupt mode (100 = interrupt when last word is shifted out of SPIxSR and the transmit is complete)
+    SPI1STATbits.SISEL          = 0b110; // Set interrupt mode (100 = interrupt when last word is shifted out of SPIxSR and the transmit is complete)
+    SPI1CON1bits.DISSCK         = 1;
     /*
     enhanced buffer mode is important because without it the interrupt after one transfer will not be generated(BUG?!?!?!?!)
     SISEL is set to 100 because we want to generate an interrupt when the last word is shifted out of the SPIxSR and the transmit is complete
@@ -90,8 +93,8 @@ void spi_init(void)
 }
 void spi_enable(void)
 {
-//IFS0bits.SPI1IF = 0; // Clear the Interrupt flag
-//IEC0bits.SPI1IE = 1; // Enable the interrupt
+//IFS0bits.SPI1EIF = 0; // Clear the Interrupt flag
+//IEC0bits.SPI1EIE = 1; // Enable the interrupt
 SPI1STATbits.SPIEN = 1;// Enable SPI1 module
 }
 

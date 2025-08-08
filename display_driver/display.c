@@ -133,9 +133,18 @@ void Display_Printf(Display* display, int line, const char* format, ...)
     }
 }
 
+void Display_Clear(Display* display, uint8_t line) 
+{
+    if (line < MAX_LINES) 
+    {
+        memset(display->buffer[line], ' ', MAX_CHARS);
+        display->buffer[line][MAX_CHARS] = '\0'; // null-terminate the string
+    }
+}
+
 void Display_Send(Display* display) 
 {
-    memset(lcd_buffer,'a',80);
+    memset(lcd_buffer,' ',80);
     for(int i = 0;i<16;i++)
     {
         

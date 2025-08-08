@@ -4,6 +4,10 @@
         "dma.h": "c",
         "spi.h": "c",
         "interrupts.h": "c",
-        "spi_protocol.h": "c"
+        "spi_protocol.h": "c",
+        "uart_protocol.h": "c",
+        "led_logic.h": "c",
+        "ui.h": "c",
+        "display.h": "c"
     }
 }

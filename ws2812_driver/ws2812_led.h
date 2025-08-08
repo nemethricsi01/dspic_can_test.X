@@ -11,7 +11,7 @@ typedef struct {
 
 } LED;
 #define NUM_LEDS 28 // Number of LEDs
-#define LED_BUFFER_SIZE (1 + 24 * NUM_LEDS) // 1: First byte is all 0, 24: 8 bits for each color (R, G, B) for each LED
+#define LED_BUFFER_SIZE (1 + 24 * NUM_LEDS + 50 + 50) // 1: First byte is all 0, 24: 8 bits for each color (R, G, B) for each LED 50 last byte is reset pulse, START with 0x00
 #define VILLSAV_OFFSET 22 //villsav starts at index 22
 
 extern volatile uint8_t led_ready;

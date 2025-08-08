@@ -1,6 +1,24 @@
 #include "timer.h"
 #include <xc.h>
 
+
+void timer_1_init(void)
+{
+    T1CONbits.TCKPS = 0;//no prescale
+    IPC0bits.T1IP = 7;
+    IFS0bits.T1IF = 0;          
+    IEC0bits.T1IE = 1;
+    TMR1 = 0ul;
+    PR1 = 20000ul;
+
+}
+void timer_1_start(void)
+{
+    T1CONbits.TON = 1;
+}
+
+
+
 void timer_4_init(void)
 {
     T4CONbits.TON = 0; // Disable Timer
