@@ -134,6 +134,7 @@ void gpio_init(void)
 
     LATAbits.LATA0 = 0; //VEZ1
     LATAbits.LATA1 = 0; //VEZ2
+    LATBbits.LATB0 = 1; //VEZ3, mute out pin
 
     columns_set_pullup();
 

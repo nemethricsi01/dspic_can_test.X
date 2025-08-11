@@ -8,6 +8,46 @@ static volatile uint32_t one_second_ticker;
 volatile uint8_t one_second_flag;
 volatile uint64_t one_millisecond_ticker = 0;
 
+static uint8_t is_leap_year(uint16_t year)
+{
+    // Gregorian leap year rule
+    return ((year % 400u) == 0u) || (((year % 4u) == 0u) && ((year % 100u) != 0u));
+}
+
+static uint8_t days_in_month(uint16_t year, uint8_t month)
+{
+    static const uint8_t mdays[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    if (month == 0u || month > 12u) return 31u;
+    if (month == 2u) return (uint8_t)(is_leap_year(year) ? 29u : 28u);
+    return mdays[month - 1u];
+}
+
+static void date_tick(void)
+{
+    uint16_t year = system_date.years;
+    uint8_t  month = system_date.months;
+    uint8_t  day = system_date.days;
+
+    // Normalize if uninitialized (0)
+    if (month < 1u) month = 1u;
+    if (day   < 1u) day   = 1u;
+
+    day++;
+    uint8_t dim = days_in_month(year, month);
+    if (day > dim) {
+        day = 1u;
+        month++;
+        if (month > 12u) {
+            month = 1u;
+            year++;
+        }
+    }
+
+    system_date.years = year;
+    system_date.months = month;
+    system_date.days = day;
+}
+
 void clock_init(void) {
     system_clock.hours = 0;
     system_clock.minutes = 0;
@@ -53,6 +93,8 @@ void clock_tick(void) {
                 
                 if (system_clock.hours >= 24) {
                     system_clock.hours = 0;
+                    // Increment date at midnight
+                    date_tick();
                 }
             }
         }

@@ -134,34 +134,34 @@ extern narval_msg_t narval_msg;
 
 static const uint8_t led_index_map[28] = 
 {
-    15,
-    18,
-    21,
-    0,
-    3,
-    6,
-    9,
-    12,
-    17,
-    20,
-    24,
-    2,
-    5,
-    8,
-    11,
-    14,
-    16,
-    19,
-    1,
-    4,
-    7,
-    10,
-    13,
-    22,
-    23,
-    25,
-    26,
-    27
+    15,//1
+    18,//2
+    21,//3
+    0,//4
+    3,//5
+    6,//6
+    9,//7
+    12,//8
+    17,//9
+    20,//10
+    24,//11
+    2,//12
+    5,//13
+    8,//14
+    11,//15
+    14,//16
+    16,//17
+    19,//18
+    1,//19
+    4,//20
+    7,//21
+    10,//22
+    13,//23
+    25,//24
+    26,//25
+    27,//26
+    22,//27
+    23//28
 };
 void init_arrays(void)
 {
@@ -206,6 +206,23 @@ static void get_own_add(narval_msg_t *msg)
     {
         own_address = msg->data[0];
         own_address_set = 1;
+    }
+    if(msg->len == 3 && msg->data[2] == 0x1 && msg->ext_or_int == CMD_INT)
+    {
+        own_address = msg->data[0];
+        own_address_set = 1;
+    }
+}
+static void get_reset(narval_msg_t *msg)
+{
+    // Check if the message is a reset command
+    if(msg->len == 4 && msg->data[3] == 0xFF && msg->ext_or_int == CMD_EXT && msg->data[1] == own_address)
+    {
+        ui_init();
+    }
+    else if(msg->len == 4 && msg->data[3] == 0xFF && msg->ext_or_int == CMD_EXT && msg->data[1] == 0xFF)
+    {
+        ui_init();
     }
 }
 static void get_menubutton(narval_msg_t *msg)
@@ -313,6 +330,8 @@ int main(void)
             get_own_add(&narval_msg);
             process_clock_commands(&narval_msg);
             get_menubutton(&narval_msg);
+            get_reset(&narval_msg);
+            
 
             ui_update(one_millisecond_ticker, &narval_msg, own_address_set, own_address, &change_menu);
 
@@ -442,6 +461,7 @@ int main(void)
             
              if((memcmp(ledek, last_ledek, 20) != 0)||(led_safety_timer == 100))
              {
+                memcpy(last_ledek, ledek, LEDTOMBNUM + 1);
                 led_safety_timer = 0; // Reset safety timer
                 /*
                 the ledek array contains the state of the LEDs
@@ -474,7 +494,7 @@ int main(void)
                         led_idx++;
                     }
                 }
-                uint8_t temp = getledek(0);
+                uint8_t temp = getledek(1);
                 for(uint8_t i = 0; i < VILLSAV_LED_COUNT; i++)
                 {
                     if((temp & (1 << i)) != 0)
@@ -490,8 +510,6 @@ int main(void)
                 }
 
                 ws2812_send_buffer(leds,NUM_LEDS);
-                memcpy(last_ledek, ledek, LEDTOMBNUM + 1);
-                
             }
         }
         if(buttonchecktimer == 0)
